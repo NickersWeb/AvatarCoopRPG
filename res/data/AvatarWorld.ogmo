@@ -8,8 +8,8 @@
   "directoryDepth": 5,
   "layerGridDefaultSize": {"x": 32, "y": 32},
   "levelDefaultSize": {"x": 320, "y": 240},
-  "levelMinSize": {"x": 1280, "y": 960},
-  "levelMaxSize": {"x": 1280, "y": 960},
+  "levelMinSize": {"x": 1920, "y": 1080},
+  "levelMaxSize": {"x": 1920, "y": 1080},
   "levelValues": [],
   "defaultExportMode": ".json",
   "compactExport": false,
@@ -24,6 +24,15 @@
       "exportID": "09933059",
       "requiredTags": [],
       "excludedTags": []
+    },
+    {
+      "definition": "tile",
+      "name": "border",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "58369361",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "border"
     },
     {
       "definition": "tile",
@@ -97,7 +106,10 @@
       "nodeDisplay": 0,
       "nodeGhost": true,
       "tags": [],
-      "values": []
+      "values": [
+        {"name": "bendingType", "definition": "String", "defaults": "air", "maxLength": 0, "trimWhitespace": true},
+        {"name": "selAtkIndex", "definition": "Integer", "defaults": 0, "bounded": false, "min": 0, "max": 5}
+      ]
     },
     {
       "exportID": "09944694",
@@ -133,7 +145,13 @@
       "nodeDisplay": 0,
       "nodeGhost": true,
       "tags": [],
-      "values": []
+      "values": [
+        {"name": "bendingType", "definition": "String", "defaults": "air", "maxLength": 0, "trimWhitespace": true},
+        {"name": "gender", "definition": "String", "defaults": "m", "maxLength": 0, "trimWhitespace": true},
+        {"name": "selAtkIndex", "definition": "Float", "defaults": 0, "bounded": false, "min": 0, "max": 5},
+        {"name": "facing", "definition": "Float", "defaults": 16, "bounded": false, "min": 0, "max": 100},
+        {"name": "attacks", "definition": "String", "defaults": "['airslice','airpush']", "maxLength": 0, "trimWhitespace": true}
+      ]
     },
     {
       "exportID": "30324537",
