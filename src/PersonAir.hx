@@ -9,8 +9,11 @@ import Person;
 class PersonAir extends Person {
 	public override function new(parent:h2d.Scene, ?values:Null<Dynamic>) {
 		super(parent);
-
+		this.tile = PersonUtils.GetPersonGraphic(this.gender, "air");
 		this.anims = PersonUtils.GetPersonGraphicAnimations("air", this.anims, this.tile);
 		// this does not work, need to iterate the tile in the map.
+	}
+	private  override function updateMovement() {
+		super.updateMovement();
 	}
 }

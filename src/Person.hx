@@ -27,9 +27,9 @@ class Person extends Anim{
     }
     var tile:Tile;
     private function updateMovement() {
-        tile = Res.images.player.sPlayerAnimations.toTile();
-        var a = sub(64);
-        play([for (i in 79...85 + 1) a[i]]);
+        // tile = Res.images.player.sPlayerAnimations.toTile();
+        // var a = sub(64);
+        // play([for (i in 79...85 + 1) a[i]]);
     }
     private function loadPersonData(){
         //for character setup, e.g. clothing, inventory etc.
