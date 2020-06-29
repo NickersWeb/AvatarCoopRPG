@@ -26,10 +26,6 @@ class Main extends hxd.App
 		font = DefaultFont.get();
 		loadTileMap();
 		fps = new Text(font,s2d);
-
-		player = new Person(s2d);
-		player.x = player.y = 200;
-		
 	}
 	override function update(dt:Float) {
 		super.update(dt);
