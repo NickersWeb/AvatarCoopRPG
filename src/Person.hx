@@ -9,11 +9,8 @@ class Person extends Object{
 	var RUNSPEED:Float = 150;
 	var DODGESPEED:Float = 300;
     var BENDINGSPEED:Float = 850;
-    public var anims:Map<String, h2d.Tile>  = new Map<String, h2d.Tile>();
-    public var tile:h2d.Tile =  null;
-    public var personG:Anim = new Anim();
-
-    var attacks:Array<String> = [];
+    public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
+    var anim:Anim;
     var atkIndex:Int = 0;
 
     var isAttacking:Bool = false;
@@ -21,11 +18,11 @@ class Person extends Object{
 	var isRunning:Bool = false;
     var gender:String = "m";
     
-    public function new() {
-        super();
+    public function new(parent) {
+        super(parent);
         loadPersonData();
     }
     private function loadPersonData(){
-
+        anim = new Anim();
     }
 }
