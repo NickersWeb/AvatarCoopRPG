@@ -3,69 +3,69 @@ import h2d.Anim;
 import hxd.Res;
 
 class PersonUtils {
-	public static function GetPerson(?values:Null<Dynamic>):Person {
-		if (values != null) {
-			switch (values.bendingType) {
+	public static function GetPerson(parent:h2d.Scene, ?entity:Null<Dynamic>):Person {
+		if (entity != null) {
+			switch (entity.values.bendingType) {
 				case "air":
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 				case "earth":
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 				case "fire":
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 				case "water":
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 				case "avatar":
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 				default:
-					return new PersonAir(values);
+					return new PersonAir(parent, entity);
 			}
 		} else {
-			return new PersonAir(values);
+			return new PersonAir(parent, entity);
 		}
 	}
 
 	public static function GetPersonGraphic(?gender:String = "m", ?bendingType:String = "air"):Tile {
-        var tile:Tile = null;
+		var tile:Tile = null;
 		switch (bendingType) {
 			case "air":
 				switch (gender) {
 					case "m":
-                        tile = Tile.fromTexture(Res.images.player.sPlayerMaleAnimations.toTexture());
+						tile = Tile.fromTexture(Res.images.player.sPlayerMaleAnimations.toTexture());
 					case "f":
-                        tile = Tile.fromTexture(Res.images.player.sPlayerFemaleAnimations.toTexture());
+						tile = Tile.fromTexture(Res.images.player.sPlayerFemaleAnimations.toTexture());
 				}
-        }
-        return tile;
+		}
+		return tile;
 	}
 
-	public static function GetPersonGraphicAnimations(?bendingType:String = "air", anims:Map<String, h2d.Tile>, tile:Tile):Map<String, Tile> {
+	public static function GetPersonGraphicAnimations(?bendingType:String = "air", anims:Map<String, Array<Tile>>, tile:Tile):Map<String, Array<Tile>> {
 		switch (bendingType) {
 			case "air":
-                anims.set("airslicerunup", tile);
-                anims.set("airslicewalkup",tile);
-                anims.set("airsliceidleup",tile);
-                anims.set("airslicerunlr",tile);
-                anims.set("airslicewalklr",tile);
-                anims.set("airsliceidlelr",tile);
-                anims.set("rolllr",tile);
-                anims.set("rolld",tile);
-                anims.set("rolldlr",tile);
-                anims.set("rollu",tile);
-                anims.set("idleu",tile);
-                anims.set("idleulr",tile);
-                anims.set("idled",tile);
-                anims.set("idlelr",tile);
-                anims.set("idledlr",tile);
-                anims.set("walkdlr",tile);
-                anims.set("runlr",tile);
-                anims.set("rundlr",tile);
-                anims.set("walklr",tile);
-                anims.set("rund",tile);
-                anims.set("walkd",tile);
-                anims.set("runulr",tile);
-                anims.set("walkulr",tile);
-                anims.set("runu",tile);
-                anims.set("walku",tile);
+				// anims.set("airslicerunup", tile);
+				// anims.set("airslicewalkup",tile);
+				// anims.set("airsliceidleup",tile);
+				// anims.set("airslicerunlr",tile);
+				// anims.set("airslicewalklr",tile);
+				// anims.set("airsliceidlelr",tile);
+				// anims.set("rolllr",tile);
+				// anims.set("rolld",tile);
+				// anims.set("rolldlr",tile);
+				// anims.set("rollu",tile);
+				// anims.set("idleu",tile);
+				// anims.set("idleulr",tile);
+				// anims.set("idled",tile);
+				// anims.set("idlelr",tile);
+				// anims.set("idledlr",tile);
+				// anims.set("walkdlr",tile);
+				// anims.set("runlr",tile);
+				// anims.set("rundlr",tile);
+				// anims.set("walklr",tile);
+				// anims.set("rund",tile);
+				// anims.set("walkd",tile);
+				// anims.set("runulr",tile);
+				// anims.set("walkulr",tile);
+				// anims.set("runu",tile);
+				// anims.set("walku",tile);
 				// "airslicerunup", [156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169], false);
 				// "airslicewalkup", [150, 151, 152, 153, 154, 155], 10, false);
 				// "airsliceidleup", [144, 145, 146, 147, 148, 149], 10, false);
@@ -103,7 +103,6 @@ class PersonUtils {
 	// 	}
 	// 	return pAnim;
 	// }
-
 	// public static function selAtkElement(proj:Projectile, bendingType:String, bendingAttack:String):Tile {
 	// 	var pAnim:FlxAnimation = null;
 	// 	switch (bendingType) {
@@ -114,11 +113,11 @@ class PersonUtils {
 	// }
 
 	public static function selBendTypeImg(bendingType:String):Tile {
-        var tile:Tile = null;
+		var tile:Tile = null;
 		switch (bendingType) {
 			case "air":
 				tile = Tile.fromTexture(Res.images.bending.air.toTexture());
-        }
-        return tile;
+		}
+		return tile;
 	}
 }

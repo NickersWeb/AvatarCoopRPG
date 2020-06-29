@@ -1,3 +1,6 @@
+import h2d.Scene;
+import h2d.Camera;
+import ogmo.Entity;
 import hxd.Pixels;
 import h2d.Tile;
 import h2d.Text;
@@ -22,8 +25,7 @@ class Main extends hxd.App
 		font = DefaultFont.get();
 		loadTileMap();
 		fps = new Text(font,s2d);
-		player = new Person(s2d);
-		player.x = player.y = 200;
+
 	}
 	override function update(dt:Float) {
 		super.update(dt);
@@ -36,11 +38,19 @@ class Main extends hxd.App
 		{
 			for (layer in level.layers)
 			{
+				for (entity in layer.entities){
+					switch (entity.name){
+						case 'player':
+							loadPlayer(entity);
+					}
+				}
 				var obj = layer.render(s2d);
+				
 			}
 		}
 	}
-	private function loadPlayer() {
-		
+	private function loadPlayer(entity:Entity) {
+		player = PersonUtils.GetPerson(s2d, entity);
+		player.setPosition(entity.x, entity.y);
 	}
 }

@@ -1,3 +1,4 @@
+import h2d.Object;
 import h2d.Tile;
 import hxd.Res;
 import hxd.fs.FileEntry;
@@ -6,11 +7,10 @@ import h2d.Anim;
 import Person;
 
 class PersonAir extends Person {
-	public override function new(?values:Null<Dynamic>) {
-		super();
+	public override function new(parent:h2d.Scene, ?values:Null<Dynamic>) {
+		super(parent);
 
-    this.anims = PersonUtils.GetPersonGraphicAnimations(values.bendingType, this.anims, this.tile);
-    //this does not work, need to iterate the tile in the map.
-		personG = new h2d.Anim(this.anims);
+		this.anims = PersonUtils.GetPersonGraphicAnimations("air", this.anims, this.tile);
+		// this does not work, need to iterate the tile in the map.
 	}
 }

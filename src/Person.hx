@@ -20,20 +20,21 @@ class Person extends Object{
 	var isRunning:Bool = false;
     var gender:String = "m";
     
-    public function new(parent) {
+    public function new(parent:h2d.Scene,?values:Null<Dynamic>) {
         super(parent);
-        /*var graphic = new Graphics(this);
-        graphic.drawCircle(0,0,10);*/
-        loadPersonData();
+        updateMovement();
     }
     var tile:Tile;
-    private function loadPersonData(){
+    private function updateMovement() {
         anim = new Anim(null,10,this);
         tile = Res.images.player.sPlayerAnimations.toTile();
         var a = sub(64);
         trace("array " + a.length);
         //[79, 80, 81, 82, 83, 84, 85],
         anim.play([for (i in 79...85 + 1) a[i]]);
+    }
+    private function loadPersonData(){
+        //for character setup, e.g. clothing, inventory etc.
     }
     private function sub(size:Int):Array<Tile>
     {
