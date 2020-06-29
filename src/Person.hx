@@ -6,7 +6,7 @@ import h2d.Anim;
 import h2d.Drawable;
 import hxd.fmt.blend.Data.Handle;
 
-class Person extends Object{
+class Person extends Anim{
     var WALKSPEED:Float = 95;
 	var RUNSPEED:Float = 150;
 	var DODGESPEED:Float = 300;
@@ -21,19 +21,14 @@ class Person extends Object{
     var gender:String = "m";
     
     public function new(parent) {
-        super(parent);
-        /*var graphic = new Graphics(this);
-        graphic.drawCircle(0,0,10);*/
+        super(null,null,parent);
         loadPersonData();
     }
     var tile:Tile;
     private function loadPersonData(){
-        anim = new Anim(null,10,this);
         tile = Res.images.player.sPlayerAnimations.toTile();
         var a = sub(64);
-        trace("array " + a.length);
-        //[79, 80, 81, 82, 83, 84, 85],
-        anim.play([for (i in 79...85 + 1) a[i]]);
+        play([for (i in 79...85 + 1) a[i]]);
     }
     private function sub(size:Int):Array<Tile>
     {
