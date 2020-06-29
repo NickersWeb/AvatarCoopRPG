@@ -1,3 +1,5 @@
+import hxd.Pixels;
+import h2d.Tile;
 import h2d.Text;
 import h2d.Font;
 import hxd.res.DefaultFont;
@@ -21,6 +23,7 @@ class Main extends hxd.App
 		loadTileMap();
 		fps = new Text(font,s2d);
 		player = new Person(s2d);
+		player.x = player.y = 200;
 	}
 	override function update(dt:Float) {
 		super.update(dt);

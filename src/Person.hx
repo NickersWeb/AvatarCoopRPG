@@ -1,3 +1,5 @@
+import h2d.Graphics;
+import hxd.Res;
 import h2d.Tile;
 import h2d.Object;
 import h2d.Anim;
@@ -20,9 +22,29 @@ class Person extends Object{
     
     public function new(parent) {
         super(parent);
+        /*var graphic = new Graphics(this);
+        graphic.drawCircle(0,0,10);*/
         loadPersonData();
     }
+    var tile:Tile;
     private function loadPersonData(){
-        anim = new Anim();
+        anim = new Anim(null,10,this);
+        tile = Res.images.player.sPlayerAnimations.toTile();
+        var a = sub(64);
+        trace("array " + a.length);
+        //[79, 80, 81, 82, 83, 84, 85],
+        anim.play([for (i in 79...85 + 1) a[i]]);
+    }
+    private function sub(size:Int):Array<Tile>
+    {
+        var array:Array<Tile> = [];
+        for (y in 0...Std.int(tile.height/size))
+        {
+            for (x in 0...Std.int(tile.width/size))
+            {
+                array.push(tile.sub(x * size,y * size,size,size));
+            }
+        }
+        return array;
     }
 }
