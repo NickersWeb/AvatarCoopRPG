@@ -13,7 +13,7 @@ class Main extends hxd.App
 		Res.initEmbed();
 		loadTileMap();
 	}
-	public function loadTileMap()
+	private function loadTileMap()
 	{
 		var map = new ogmo.Project(Res.data.AvatarWorld_ogmo,true);
 		for (level in map.levels)
@@ -23,5 +23,8 @@ class Main extends hxd.App
 				var obj = layer.render(s2d);
 			}
 		}
+	}
+	private function loadPlayer() {
+		
 	}
 }
