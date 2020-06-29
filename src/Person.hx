@@ -21,18 +21,12 @@ class Person extends Anim{
     var gender:String = "m";
     
     public function new(parent:h2d.Scene,?values:Null<Dynamic>) {
-        super(parent);
+        super(null,null,parent);
+        anim = new Anim(null,10,this);
         updateMovement();
     }
     var tile:Tile;
     private function updateMovement() {
-        anim = new Anim(null,10,this);
-    public function new(parent) {
-        super(null,null,parent);
-        loadPersonData();
-    }
-    var tile:Tile;
-    private function loadPersonData(){
         tile = Res.images.player.sPlayerAnimations.toTile();
         var a = sub(64);
         play([for (i in 79...85 + 1) a[i]]);
