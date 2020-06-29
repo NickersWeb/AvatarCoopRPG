@@ -18,6 +18,7 @@ class Main extends hxd.App
 	var font:Font;
 	var fps:Text;
 	var player:Person;
+	var int:Int = 0;
 	override function init()
 	{
 		super.init();
@@ -26,10 +27,13 @@ class Main extends hxd.App
 		loadTileMap();
 		fps = new Text(font,s2d);
 
+		player = new Person(s2d);
+		player.x = player.y = 200;
+		
 	}
 	override function update(dt:Float) {
 		super.update(dt);
-		fps.text = 'fps: ${Std.int(engine.fps + 0.5)} draws: ${engine.drawCalls}';
+		if (int++ % 100 == 0) fps.text = 'fps: ${Std.int(engine.fps + 0.5)} draws: ${engine.drawCalls}';
 	}
 	private function loadTileMap()
 	{
