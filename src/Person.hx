@@ -28,6 +28,8 @@ class Person extends Object {
 
 	public function new(?parent : h2d.Object, ?values:Null<Dynamic>) {
 		super(parent);
+		var graphic = new Graphics(this);
+		graphic.drawCircle(0,0,10);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
 		hxd.Window.getInstance().addEventTarget(personEvent);

@@ -35,6 +35,7 @@ class Main extends hxd.App
 	private function loadTileMap()
 	{
 		var map = new ogmo.Project(Res.data.AvatarWorld_ogmo,true);
+		var player:Entity = null;
 		for (level in map.levels)
 		{
 			for (layer in level.layers)
@@ -42,17 +43,17 @@ class Main extends hxd.App
 				for (entity in layer.entities){
 					switch (entity.name){
 						case 'player':
-							loadPlayer(entity);
+						player = entity;
 					}
 				}
-				var obj = layer.render(s2d);
+				layer.render(s2d);
 				
 			}
 		}
+		loadPlayer(player);
 	}
 	private function loadPlayer(entity:Entity) {
 		player = PersonUtils.GetPerson(s2d, entity);
 		player.setPosition(entity.x, entity.y);
-		s2d.addChild(player);
 	}
 }
