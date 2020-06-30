@@ -30,6 +30,7 @@ class Main extends hxd.App
 	override function update(dt:Float) {
 		super.update(dt);
 		if (int++ % 100 == 0) fps.text = 'fps: ${Std.int(engine.fps + 0.5)} draws: ${engine.drawCalls}';
+		player.personAnimation();
 	}
 	private function loadTileMap()
 	{

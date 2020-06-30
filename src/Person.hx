@@ -1,3 +1,4 @@
+import hxd.Window;
 import sys.ssl.Key;
 import hxd.Event;
 import h2d.Interactive;
@@ -25,14 +26,14 @@ class Person extends Object {
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
-	public function new(parent:h2d.Scene, ?values:Null<Dynamic>) {
+	public function new(?parent : h2d.Object, ?values:Null<Dynamic>) {
 		super(parent);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
-		parent.addEventListener(personEvent);
+		hxd.Window.getInstance().addEventTarget(personEvent);
 	}
 
-	private function personAnimation() {
+	public function personAnimation() {
         var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64);
 
                 if (!isAttacking)
@@ -101,6 +102,7 @@ class Person extends Object {
 			this.move(personSpeedCal(), 0);
 			this.rotate(newAngle);
 		}
+		this.personAnimation();
 	}
 
 	private function personSpeedCal():Float {
