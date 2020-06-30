@@ -52,5 +52,6 @@ class Main extends hxd.App
 	private function loadPlayer(entity:Entity) {
 		player = PersonUtils.GetPerson(s2d, entity);
 		player.setPosition(entity.x, entity.y);
+		s2d.addChild(player);
 	}
 }

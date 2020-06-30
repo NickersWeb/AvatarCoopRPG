@@ -1,3 +1,6 @@
+import sys.ssl.Key;
+import hxd.Event;
+import h2d.Interactive;
 import h2d.Graphics;
 import hxd.Res;
 import h2d.Tile;
@@ -6,44 +9,107 @@ import h2d.Anim;
 import h2d.Drawable;
 import hxd.fmt.blend.Data.Handle;
 
-class Person extends Anim{
-    var WALKSPEED:Float = 95;
+class Person extends Object {
+	var WALKSPEED:Float = 95;
 	var RUNSPEED:Float = 150;
 	var DODGESPEED:Float = 300;
     var BENDINGSPEED:Float = 850;
-    public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
-    var anim:Anim;
-    var atkIndex:Int = 0;
-
-    var isAttacking:Bool = false;
+    
+	var tile:Tile;
+	var anim:Anim = new Anim();
+	var atkIndex:Int = 0;
+	var isAttacking:Bool = false;
 	var isDodging:Bool = false;
-	var isRunning:Bool = false;
+    var isRunning:Bool = false;
     var gender:String = "m";
     
-    public function new(parent:h2d.Scene,?values:Null<Dynamic>) {
-        super(null,null,parent);
-        anim = new Anim(null,10,this);
-        updateMovement();
-    }
-    var tile:Tile;
-    private function updateMovement() {
-        // tile = Res.images.player.sPlayerAnimations.toTile();
-        // var a = sub(64);
-        // play([for (i in 79...85 + 1) a[i]]);
-    }
-    private function loadPersonData(){
-        //for character setup, e.g. clothing, inventory etc.
-    }
-    private function sub(size:Int):Array<Tile>
-    {
-        var array:Array<Tile> = [];
-        for (y in 0...Std.int(tile.height/size))
-        {
-            for (x in 0...Std.int(tile.width/size))
-            {
-                array.push(tile.sub(x * size,y * size,size,size));
-            }
+	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
+
+
+	public function new(parent:h2d.Scene, ?values:Null<Dynamic>) {
+        super(parent);
+        this.anim = new Anim(null, 10, this);
+        loadPersonData();
+        parent.addEventListener(personEvent);
+	}
+
+
+
+	private function personAnimation() {
+        var a = AnimCal(64);
+        this.anim.play([for (i in 79...85 + 1) a[i]]);
+	}
+
+	private function personEvent(event:Event) {
+		var newAngle:Float = 0;
+		var up:Bool = hxd.Key.isPressed(hxd.Key.UP);
+		var down:Bool = hxd.Key.isPressed(hxd.Key.DOWN);
+		var left:Bool = hxd.Key.isPressed(hxd.Key.LEFT);
+		var right:Bool = hxd.Key.isPressed(hxd.Key.RIGHT);
+		isRunning =  hxd.Key.isPressed(hxd.Key.SHIFT);
+
+		if (up && down) {
+			up = down = false;
+		}
+		if (left && right) {
+			left = right = false;
+		}
+		if (up || down || left || right) {
+			if (up) {
+				newAngle = -90;
+				if (left) {
+					newAngle -= 45;
+				} else if (right) {
+					newAngle += 45;
+				}
+			} else if (down) {
+				newAngle = 90;
+				if (left) {
+					newAngle += 45;
+				} else if (right) {
+					newAngle -= 45;
+				}
+			} else if (left) {
+				newAngle = 180;
+			} else if (right) {
+				newAngle = 0;
+			}
+
+            // determine our velocity based on angle and speed
+            this.move(personSpeedCal(), 0);
+            this.rotate(newAngle);
+		}
+	}
+
+	private function personSpeedCal():Float {
+		var playerSpeed:Float = WALKSPEED;
+		if (isRunning) {
+			playerSpeed = RUNSPEED;
+		}
+		if (isDodging) {
+			playerSpeed = DODGESPEED;
+		}
+		return playerSpeed;
+	}
+
+	private function loadPersonData() {
+		// for character setup, e.g. clothing, inventory etc.
+	}
+
+    // private function runAnimation() {}
+    private function idleAnimation() {
+        switch(rotation){
+            case rotation:
         }
-        return array;
     }
+	private function AnimCal(size:Int):Array<Tile> {
+		var array:Array<Tile> = [];
+		for (y in 0...Std.int(this.tile.height / size)) {
+			for (x in 0...Std.int(this.tile.width / size)) {
+				array.push(this.tile.sub(x * size, y * size, size, size));
+			}
+		}
+		return array;
+	}
+	
 }
