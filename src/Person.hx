@@ -31,7 +31,8 @@ class Person extends Object {
 		super(parent);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
-		hxd.Window.getInstance().addEventTarget(personEvent);
+		parent.getScene().addEventListener(personEvent);
+		// hxd.Window.getInstance().addEventTarget(personEvent);
 	}
 
 	public function personAnimation() {
@@ -180,16 +181,14 @@ class Person extends Object {
 				this.anim.play([for (i in 94...95 + 1) a[i]]);
 			case "down":
 				this.anim.play([for (i in 90...91 + 1) a[i]]);
-			case "left":
-			case "right":
+			case "left", "right":
 				this.anim.speed = 1;
 				this.anim.play([for (i in 88...89 + 1) a[i]]);
 			case "upleft":
 				this.anim.play([for (i in 79...85 + 1) a[i]]);
 			case "upright":
 				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			case "downleft":
-			case "downright":
+			case "downleft", "downright":
 				this.anim.play([for (i in 79...85 + 1) a[i]]);
 		}
 	}

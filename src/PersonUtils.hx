@@ -120,18 +120,21 @@ class PersonUtils {
 		}
 		return tile;
 	}
-	public static function animCal(tile:Tile,height:Int, width:Int, size:Int, facing:String):Array<Tile> {
+
+	public static function animCal(tile:Tile, height:Int, width:Int, size:Int, facing:String):Array<Tile> {
 		var array:Array<Tile> = [];
+		
 		for (y in 0...Std.int(tile.height / height)) {
 			for (x in 0...Std.int(tile.width / width)) {
-				switch (facing) {
-					case "right":
-					case "upright":
-					case "downright":
-						tile.flipY();
-				}
-				array.push(tile.sub(x * size, y * size, size, size));
+				array.push(tile.sub(x * size, y * size, width, height));
 			}
+		}
+		switch (facing) {
+			case "right", "upright", "downright":
+				for (i in 0...array.length){
+					array[i] = array[i].center();
+				    array[i].flipX();
+				}
 		}
 		return array;
 	}
