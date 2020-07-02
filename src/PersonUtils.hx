@@ -132,7 +132,6 @@ class PersonUtils {
 		switch (facing) {
 			case "right", "upright", "downright":
 				for (i in 0...array.length){
-					array[i] = array[i].center();
 				    array[i].flipX();
 				}
 		}

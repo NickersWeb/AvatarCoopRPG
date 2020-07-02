@@ -176,20 +176,18 @@ class Person extends Object {
 	}
 
 	private function idleAnimation(a:Array<Tile>) {
+		this.anim.speed = 0.5;
 		switch (facing) {
 			case "up":
 				this.anim.play([for (i in 94...95 + 1) a[i]]);
 			case "down":
 				this.anim.play([for (i in 90...91 + 1) a[i]]);
 			case "left", "right":
-				this.anim.speed = 1;
 				this.anim.play([for (i in 88...89 + 1) a[i]]);
-			case "upleft":
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			case "upright":
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
+			case "upleft", "upright":
+				this.anim.play([for (i in 92...93 + 1) a[i]]);
 			case "downleft", "downright":
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
+				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
 	}
 }
