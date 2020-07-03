@@ -119,59 +119,48 @@ class Person extends Object {
 	}
 
 	private function walkAnimation(a:Array<Tile>) {
-		switch (rotation) {
-			// up
-			case -90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// down
-			case 90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// left
-			case 180:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// right
-			case 0:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			case 135:
+		this.anim.speed = 8;
+		switch (facing) {
+			case "up":
+				this.anim.play([for (i in 7...14 + 1) a[i]]);
+			case "down":
+				this.anim.play([for (i in 39...46 + 1) a[i]]);
+			case "left", "right":
+				this.anim.play([for (i in 55...62 + 1) a[i]]);
+			case "upleft", "upright":
+				this.anim.play([for (i in 23...30 + 1) a[i]]);
+			case "downleft", "downright":
 				this.anim.play([for (i in 79...85 + 1) a[i]]);
 		}
 	}
 
 	private function runAnimation(a:Array<Tile>) {
-		switch (rotation) {
-			// up
-			case -90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// down
-			case 90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// left
-			case 180:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// right
-			case 0:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			case 135:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
+		switch (facing) {
+			case "up":
+				this.anim.play([for (i in 15...22 + 1) a[i]]);
+			case "down":
+				this.anim.play([for (i in 47...54 + 1) a[i]]);
+			case "left", "right":
+				this.anim.play([for (i in 71...77 + 1) a[i]]);
+			case "upleft", "upright":
+				this.anim.play([for (i in 31...38 + 1) a[i]]);
+			case "downleft", "downright":
+				this.anim.play([for (i in 63...70 + 1) a[i]]);
 		}
 	}
 
 	private function dodgeRollAnimation(a:Array<Tile>) {
-		switch (rotation) {
-			// up
-			case -90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// down
-			case 90:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// left
-			case 180:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			// right
-			case 0:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
-			case 135:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
+		switch (facing) {
+			case "up":
+				this.anim.play([for (i in 94...95 + 1) a[i]]);
+			case "down":
+				this.anim.play([for (i in 90...91 + 1) a[i]]);
+			case "left", "right":
+				this.anim.play([for (i in 88...89 + 1) a[i]]);
+			case "upleft", "upright":
+				this.anim.play([for (i in 92...93 + 1) a[i]]);
+			case "downleft", "downright":
+				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
 	}
 
