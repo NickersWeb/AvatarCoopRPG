@@ -126,7 +126,7 @@ class PersonUtils {
 		
 		for (y in 0...Std.int(tile.height / height)) {
 			for (x in 0...Std.int(tile.width / width)) {
-				array.push(tile.sub(x * size, y * size, width, height));
+				array.push(tile.sub(x * size, y * size, width, height,  -0.5 * width, -0.5 * height));
 			}
 		}
 		switch (facing) {
