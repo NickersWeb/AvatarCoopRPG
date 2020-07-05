@@ -54,12 +54,9 @@ class Person extends Object {
 	}
 
 	private function personEvent(event:Event) {
-		switch (event.kind) {
-			case EKeyDown | EKeyUp:
-			//do nothing
-			default:
-			return; //return for performance as to not check event if keys not pressed
-		}
+
+		if (event.kind != EKeyDown && event.kind != EKeyUp) return;
+		
 		var spd:Float = this.personSpeedCal();
 		var up:Bool = hxd.Key.isPressed(hxd.Key.W);
 		var down:Bool = hxd.Key.isPressed(hxd.Key.S);
