@@ -22,6 +22,7 @@ class Main extends hxd.App {
 	var fps:Text;
 	//var playerB:Body;
 	var int:Int = 0;
+	public static var world:World;
 
 	override function init() {
 		super.init();
@@ -35,10 +36,19 @@ class Main extends hxd.App {
 		// 	gravity_y: 20, // Force of Gravity on the Y axis. Also available for the X axis.
 		// 	iterations: 2 // Sets the number of Physics iterations that will occur each time the World steps.
 		// });
+		world = Echo.start({
+			width: s2d.width, // Affects the bounds for collision checks.
+			height: s2d.height, // Affects the bounds for collision checks.
+			iterations: 1 // Sets the number of Physics iterations that will occur each time the World steps.
+		});
 		loadTileMap();
 		fps = new Text(DefaultFont.get(), s2d);
 	}
-
+	override function onResize() {
+		super.onResize();
+		world.width = s2d.width;
+		world.height = s2d.height;
+	}
 	private function debug() {
 		if (int++ % 100 == 0) {
 			fps.text = 'fps: ${Std.int(engine.fps + 0.5)} draws: ${engine.drawCalls}';
@@ -48,6 +58,7 @@ class Main extends hxd.App {
 	override function update(dt:Float) {
 		super.update(dt);
 		debug();
+		world.step(dt);
 	}
 
 	private function loadTileMap() {
