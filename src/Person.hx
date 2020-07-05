@@ -11,10 +11,10 @@ import h2d.Drawable;
 import hxd.fmt.blend.Data.Handle;
 
 class Person extends Object {
-	var WALKSPEED:Float = 95;
-	var RUNSPEED:Float = 150;
-	var DODGESPEED:Float = 300;
-	var BENDINGSPEED:Float = 850;
+	var WALKSPEED:Float = 5;
+	var RUNSPEED:Float = 10;
+	var DODGESPEED:Float = 30;
+	var BENDINGSPEED:Float = 50;
 
 	var tile:Tile;
 	var anim:Anim = new Anim();
@@ -24,7 +24,7 @@ class Person extends Object {
 	var isRunning:Bool = false;
 	var gender:String = "m";
 	var facing:String = "downleft";
-
+	var weight:Float = 45;
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
 	public function new(?parent:h2d.Object, ?values:Null<Dynamic>) {
@@ -54,11 +54,12 @@ class Person extends Object {
 	}
 
 	private function personEvent(event:Event) {
-		var newAngle:Float = 0;
+		var spd:Float = this.personSpeedCal();
 		var up:Bool = hxd.Key.isPressed(hxd.Key.W);
 		var down:Bool = hxd.Key.isPressed(hxd.Key.S);
 		var left:Bool = hxd.Key.isPressed(hxd.Key.A);
 		var right:Bool = hxd.Key.isPressed(hxd.Key.D);
+		var newAngle:Float = 0;
 		isRunning = hxd.Key.isPressed(hxd.Key.SHIFT);
 
 		if (up && down) {
@@ -69,38 +70,32 @@ class Person extends Object {
 		}
 		if (up || down || left || right) {
 			if (up) {
-				newAngle = -90;
 				this.facing = "up";
 				if (left) {
 					this.facing += "left";
-					newAngle -= 45;
 				} else if (right) {
 					this.facing += "right";
-					newAngle += 45;
 				}
 			} else if (down) {
 				this.facing = "down";
-				newAngle = 90;
 				if (left) {
 					this.facing += "left";
-					newAngle += 45;
 				} else if (right) {
 					this.facing += "right";
-					newAngle -= 45;
 				}
 			} else if (left) {
 				this.facing = "left";
-				newAngle = 180;
 			} else if (right) {
 				this.facing = "right";
-				newAngle = 0;
 			}
 
-			// determine our velocity based on angle and speed
-			// this.move(personSpeedCal(), 0);
-			// this.rotate(newAngle);
 			this.personAnimation();
+			// determine our velocity based on angle and speed
+			//this.movePerson(dx, dy);
 		}
+	}
+
+	private function movePerson(dx:Float, dy:Float) {
 	}
 
 	private function personSpeedCal():Float {
