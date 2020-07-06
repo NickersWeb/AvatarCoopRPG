@@ -1,3 +1,4 @@
+import hxmath.math.Vector2;
 import hxd.Window;
 import sys.ssl.Key;
 import hxd.Event;
@@ -25,7 +26,8 @@ class Person extends Entity {
 	var isRunning:Bool = false;
 	var gender:String = "m";
 	var facing:String = "downleft";
-	var weight:Float = 45;
+	var speed:Float = 0;
+
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
 	public override function new(?parent:Object, body_options:BodyOptions) {
@@ -52,25 +54,22 @@ class Person extends Entity {
 		// 	idleAnimation(a);
 		// }
 	}
-	var up:Bool = false;
-	var down:Bool = false;
-	var left:Bool = false;
-	var right:Bool = false;
 
-	var speed:Float = 0;
 	private function personEvent(event:Event) {
-
-		if (event.kind != EKeyDown && event.kind != EKeyUp) return;
-		up = hxd.Key.isDown(hxd.Key.W);
-		down = hxd.Key.isDown(hxd.Key.S);
-		left = hxd.Key.isDown(hxd.Key.A);
-		right = hxd.Key.isDown(hxd.Key.D);
+		if (event.kind != EKeyDown && event.kind != EKeyUp)
+			return;
+		var up = hxd.Key.isDown(hxd.Key.W);
+		var down = hxd.Key.isDown(hxd.Key.S);
+		var left = hxd.Key.isDown(hxd.Key.A);
+		var right = hxd.Key.isDown(hxd.Key.D);
 		isRunning = hxd.Key.isDown(hxd.Key.SHIFT);
 		speed = personSpeedCal();
 
 		body.drag.x = body.drag.y = 100 * 2;
-		if (up || down) body.velocity.x = 0;
-		if (left || right) body.velocity.y = 0;
+		if (up || down)
+			body.velocity.x = 0;
+		if (left || right)
+			body.velocity.y = 0;
 
 		if (up && down) {
 			up = down = false;
@@ -100,12 +99,35 @@ class Person extends Entity {
 			}
 
 			this.personAnimation();
-			// determine our velocity based on angle and speed
-			//this.movePerson(dx, dy);
 		}
 	}
 
-	private function movePerson(dx:Float, dy:Float) {
+	private function movePerson(dt:Float) {
+		var newAngle:Float = 0;
+		switch (this.facing) {
+			case "up":
+				newAngle = -90;
+			case "upleft":
+				newAngle = -135;
+			case "upright":
+				newAngle = -45;
+			case "down":
+				newAngle = 90;
+			case "downleft":
+				newAngle = 135;
+			case "downright":
+				newAngle = 45;
+			case "left":
+				newAngle = 180;
+			case "right":
+				newAngle = 0;
+		}
+		this.body.velocity.set((this.speed * dt), 0);
+		this.body.velocity.rotate(newAngle, Vector2.zero);
+		// if (up) this.body.velocity.y = -speed * dt;
+		// if (down) this.body.velocity.y = speed * dt;
+		// if (left) this.body.velocity.x = -speed * dt;
+		// if (right) this.body.velocity.x = speed * dt;
 	}
 
 	private function personSpeedCal():Float {
@@ -185,13 +207,9 @@ class Person extends Entity {
 		}
 	}
 
-	//Overide echo update loop
+	// Overide echo update loop
 	public override function step(dt:Float) {
 		super.step(dt);
-		if (up) this.body.velocity.y = -speed * dt;
-		if (down) this.body.velocity.y = speed * dt;
-		if (left) this.body.velocity.x = -speed * dt;
-		if (right) this.body.velocity.x = speed * dt;
-		trace('vx ' + this.body.velocity.x);
+		this.movePerson(dt);
 	}
 }
