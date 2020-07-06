@@ -12,6 +12,8 @@ import h2d.Graphics;
 import hxd.Res;
 import echo.Echo;
 import Entity;
+import echo.util.Debug;
+import hxd.Key;
 
 class Main extends hxd.App {
 	public static var world:World;
@@ -30,14 +32,26 @@ class Main extends hxd.App {
 
 		// Create a new echo World, set to the size of the heaps engine
 		world = new World({
-			width: engine.width,
-			height: engine.height,
+			width: 800,
+			height: 800,
 			gravity_y: 0
 		});
+		var body = new Body({
+			x: 50,
+			y: 50,
+			elasticity: 0.3,
+			shape: {
+				type: RECT,
+				width: 50,
+				height: 50
+			}
+		});
+		body.velocity.x = 10;
+		world.add(body);
+		loadTileMap();
 		#if debug
 		echo_debug_drawer = new HeapsDebug(s2d);
 		#end
-		loadTileMap();
 	}
 
 	override function onResize() {
@@ -45,7 +59,7 @@ class Main extends hxd.App {
 		world.width = s2d.width;
 		world.height = s2d.height;
 	}
-
+	var player:Person;
 	private function loadTileMap() {
 		var map = new ogmo.Project(Res.data.AvatarWorld_ogmo, true);
 		var player:ogmo.Entity = null;
@@ -63,10 +77,9 @@ class Main extends hxd.App {
 		}
 		loadPlayer(player);
 	}
-
 	private function loadPlayer(entity:ogmo.Entity) {
 		// Need somewhere to store data.
-		var player:Person = PersonUtils.GetPerson(s2d, {
+		player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
 			elasticity: 0.2,
@@ -86,13 +99,13 @@ class Main extends hxd.App {
 		// step all the entities
 		for (entity in Entity.all)
 			entity.step(dt);
-
 		// step the world
 		world.step(dt);
-
+		//update player
+		if (player != null) player.update(dt);
 		#if debug
-		if (Key.isPressed(Key.QWERTY_TILDE))
-			echo_debug_drawer.canvas.visible = !echo_debug_drawer.canvas.visible;
+		//if (Key.isPressed(Key.QWERTY_TILDE) || Key.isPressed(Key.TAB))
+		//	echo_debug_drawer.canvas.visible = !echo_debug_drawer.canvas.visible;
 		echo_debug_drawer.draw(world);
 		#end
 	}

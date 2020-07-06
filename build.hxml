@@ -6,6 +6,7 @@
 -lib hlopenal
 -lib heapsOgmo
 -hl app.hl
+-D debug
 -D windowsSize=1280x720
 -D windowTitle=Avatar
 # echo macro - adds a field named `entity` of type `Entity` to the `echo.Body` class

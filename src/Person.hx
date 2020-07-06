@@ -52,18 +52,22 @@ class Person extends Entity {
 		// 	idleAnimation(a);
 		// }
 	}
+	var up:Bool = false;
+	var down:Bool = false;
+	var left:Bool = false;
+	var right:Bool = false;
 
+	var speed:Float = 0;
 	private function personEvent(event:Event) {
 
 		if (event.kind != EKeyDown && event.kind != EKeyUp) return;
-		
-		var spd:Float = this.personSpeedCal();
-		var up:Bool = hxd.Key.isPressed(hxd.Key.W);
-		var down:Bool = hxd.Key.isPressed(hxd.Key.S);
-		var left:Bool = hxd.Key.isPressed(hxd.Key.A);
-		var right:Bool = hxd.Key.isPressed(hxd.Key.D);
-		var newAngle:Float = 0;
-		isRunning = hxd.Key.isPressed(hxd.Key.SHIFT);
+		up = hxd.Key.isDown(hxd.Key.W);
+		down = hxd.Key.isDown(hxd.Key.S);
+		left = hxd.Key.isDown(hxd.Key.A);
+		right = hxd.Key.isDown(hxd.Key.D);
+		isRunning = hxd.Key.isDown(hxd.Key.SHIFT);
+		speed = personSpeedCal();
+		trace('$up $down $left $right');
 
 		if (up && down) {
 			up = down = false;
@@ -96,6 +100,12 @@ class Person extends Entity {
 			// determine our velocity based on angle and speed
 			//this.movePerson(dx, dy);
 		}
+	}
+	public function update(dt:Float) {
+		if (up) this.body.velocity.y = -speed * dt;
+		if (down) this.body.velocity.y = speed * dt;
+		if (left) this.body.velocity.x = -speed * dt;
+		if (right) this.body.velocity.x = speed * dt;
 	}
 
 	private function movePerson(dx:Float, dy:Float) {
