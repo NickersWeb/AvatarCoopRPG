@@ -9,8 +9,9 @@ import h2d.Object;
 import h2d.Anim;
 import h2d.Drawable;
 import hxd.fmt.blend.Data.Handle;
+import echo.data.Options.BodyOptions;
 
-class Person extends Object {
+class Person extends Entity {
 	var WALKSPEED:Float = 5;
 	var RUNSPEED:Float = 10;
 	var DODGESPEED:Float = 30;
@@ -27,12 +28,11 @@ class Person extends Object {
 	var weight:Float = 45;
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
-	public function new(?parent:h2d.Object, ?values:Null<Dynamic>) {
-		super(parent);
+	public override function new(?parent:Object, body_options:BodyOptions) {
+		super(parent, body_options);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
 		parent.getScene().addEventListener(personEvent);
-		// hxd.Window.getInstance().addEventTarget(personEvent);
 	}
 
 	public function personAnimation() {
@@ -176,5 +176,11 @@ class Person extends Object {
 			case "downleft", "downright":
 				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
+	}
+
+	//Overide echo update loop
+	public override function step(dt:Float) {
+		super.step(dt);
+		
 	}
 }

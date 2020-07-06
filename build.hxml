@@ -8,3 +8,5 @@
 -hl app.hl
 -D windowsSize=1280x720
 -D windowTitle=Avatar
+# echo macro - adds a field named `entity` of type `Entity` to the `echo.Body` class
+--macro echo.Macros.add_data("entity", "Entity")

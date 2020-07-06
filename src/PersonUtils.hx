@@ -1,27 +1,24 @@
 import h2d.Tile;
 import h2d.Anim;
 import hxd.Res;
+import echo.data.Options.BodyOptions;
 
 class PersonUtils {
-	public static function GetPerson(parent:h2d.Scene, ?entity:Null<Dynamic>):Person {
-		if (entity != null) {
-			switch (entity.values.bendingType) {
+	public static function GetPerson(parent:h2d.Scene, body_options:BodyOptions, bendingType:String):Person {
+			switch (bendingType) {
 				case "air":
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent , body_options);
 				case "earth":
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent, body_options);
 				case "fire":
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent, body_options);
 				case "water":
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent, body_options);
 				case "avatar":
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent, body_options);
 				default:
-					return new PersonAir(parent, entity);
+					return new PersonAir(parent, body_options);
 			}
-		} else {
-			return new PersonAir(parent, entity);
-		}
 	}
 
 	public static function GetPersonGraphic(?gender:String = "m", ?bendingType:String = "air"):Tile {
