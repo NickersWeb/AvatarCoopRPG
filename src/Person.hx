@@ -12,10 +12,10 @@ import hxd.fmt.blend.Data.Handle;
 import echo.data.Options.BodyOptions;
 
 class Person extends Entity {
-	var WALKSPEED:Float = 5;
-	var RUNSPEED:Float = 10;
-	var DODGESPEED:Float = 30;
-	var BENDINGSPEED:Float = 50;
+	var WALKSPEED:Float = 5000;
+	var RUNSPEED:Float = 10000;
+	var DODGESPEED:Float = 30000;
+	var BENDINGSPEED:Float = 50000;
 
 	var tile:Tile;
 	var anim:Anim = new Anim();
@@ -67,7 +67,10 @@ class Person extends Entity {
 		right = hxd.Key.isDown(hxd.Key.D);
 		isRunning = hxd.Key.isDown(hxd.Key.SHIFT);
 		speed = personSpeedCal();
-		trace('$up $down $left $right');
+
+		body.drag.x = body.drag.y = 100 * 2;
+		if (up || down) body.velocity.x = 0;
+		if (left || right) body.velocity.y = 0;
 
 		if (up && down) {
 			up = down = false;
@@ -189,5 +192,6 @@ class Person extends Entity {
 		if (down) this.body.velocity.y = speed * dt;
 		if (left) this.body.velocity.x = -speed * dt;
 		if (right) this.body.velocity.x = speed * dt;
+		trace('vx ' + this.body.velocity.x);
 	}
 }
