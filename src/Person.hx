@@ -64,8 +64,6 @@ class Person extends Entity {
 		var right = hxd.Key.isDown(hxd.Key.D);
 		isRunning = hxd.Key.isDown(hxd.Key.SHIFT);
 		speed = personSpeedCal();
-
-		body.drag.x = body.drag.y = 100 * 2;
 		if (up || down)
 			body.velocity.x = 0;
 		if (left || right)
@@ -106,11 +104,11 @@ class Person extends Entity {
 		var newAngle:Float = 0;
 		switch (this.facing) {
 			case "up":
-				newAngle = -90;
+				newAngle = 270;
 			case "upleft":
-				newAngle = -135;
+				newAngle = 225;
 			case "upright":
-				newAngle = -45;
+				newAngle = 315;
 			case "down":
 				newAngle = 90;
 			case "downleft":
@@ -122,12 +120,13 @@ class Person extends Entity {
 			case "right":
 				newAngle = 0;
 		}
-		this.body.velocity.set((this.speed * dt), 0);
-		this.body.velocity.rotate(newAngle, Vector2.zero);
+		var angle = hxd.Math.degToRad(newAngle);
+		this.body.velocity.set(Math.cos(angle) * this.speed * dt, Math.sin(angle) * this.speed * dt);
 		// if (up) this.body.velocity.y = -speed * dt;
 		// if (down) this.body.velocity.y = speed * dt;
 		// if (left) this.body.velocity.x = -speed * dt;
 		// if (right) this.body.velocity.x = speed * dt;
+		body.drag.x = body.drag.y = 1000 * 2;
 	}
 
 	private function personSpeedCal():Float {
