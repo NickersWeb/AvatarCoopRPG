@@ -82,6 +82,7 @@ class Main extends hxd.App {
 		player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
+			drag_length: 20,
 			elasticity: 0.2,
 			shape: {
 			  type: CIRCLE,

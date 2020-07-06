@@ -13,6 +13,7 @@ class PersonAir extends Person {
 		this.name = "personair";
 		this.tile = PersonUtils.GetPersonGraphic(this.gender, "air");
 		this.anims = PersonUtils.GetPersonGraphicAnimations("air", this.anims, this.tile);
+		this.state = Idle;
 		// this does not work, need to iterate the tile in the map.
 	}
 }

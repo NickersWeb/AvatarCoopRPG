@@ -1,3 +1,4 @@
+import h3d.pass.Default;
 import hxmath.math.Vector2;
 import hxd.Window;
 import sys.ssl.Key;
@@ -12,21 +13,28 @@ import h2d.Drawable;
 import hxd.fmt.blend.Data.Handle;
 import echo.data.Options.BodyOptions;
 
+enum State {
+	Run;
+	Walk;
+	Dodge;
+	Attack;
+	Idle;
+	None;
+}
+
 class Person extends Entity {
-	var WALKSPEED:Float = 5000;
-	var RUNSPEED:Float = 10000;
-	var DODGESPEED:Float = 30000;
-	var BENDINGSPEED:Float = 50000;
+	var WALKSPEED:Float = 95;
+	var RUNSPEED:Float = 150;
+	var DODGESPEED:Float = 300;
+	var BENDINGSPEED:Float = 850;
 
 	var tile:Tile;
 	var anim:Anim = new Anim();
 	var atkIndex:Int = 0;
-	var isAttacking:Bool = false;
-	var isDodging:Bool = false;
-	var isRunning:Bool = false;
+	var state(default, set):State;
+
 	var gender:String = "m";
 	var facing:String = "downleft";
-	var speed:Float = 0;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -39,20 +47,17 @@ class Person extends Entity {
 
 	public function personAnimation() {
 		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-		idleAnimation(a);
-		// if ((this.x != 0 || this.x != 0)) {
-		// 	if (isDodging) {
-		// 		dodgeRollAnimation(a);
-		// 	} else {
-		// 		if (isRunning) {
-		// 			runAnimation(a);
-		// 		} else {
-		// 			walkAnimation(a);
-		// 		}
-		// 	}
-		// } else {
-		// 	idleAnimation(a);
-		// }
+		switch (this.state) {
+			case Run:
+				this.runAnimation(a);
+			case Dodge:
+				this.dodgeRollAnimation(a);
+			case Walk:
+				this.walkAnimation(a);
+			case Idle:
+				this.idleAnimation(a);
+			case Attack, None:
+		}
 	}
 
 	private function personEvent(event:Event) {
@@ -62,8 +67,8 @@ class Person extends Entity {
 		var down = hxd.Key.isDown(hxd.Key.S);
 		var left = hxd.Key.isDown(hxd.Key.A);
 		var right = hxd.Key.isDown(hxd.Key.D);
-		isRunning = hxd.Key.isDown(hxd.Key.SHIFT);
-		speed = personSpeedCal();
+		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
+
 		if (up || down)
 			body.velocity.x = 0;
 		if (left || right)
@@ -95,9 +100,11 @@ class Person extends Entity {
 			} else if (right) {
 				this.facing = "right";
 			}
-
-			this.personAnimation();
+			this.state = shift ? Run : Walk;
+		} else {
+			this.state = Idle;
 		}
+		this.personAnimation();
 	}
 
 	private function movePerson(dt:Float) {
@@ -121,23 +128,23 @@ class Person extends Entity {
 				newAngle = 0;
 		}
 		var angle = hxd.Math.degToRad(newAngle);
-		this.body.velocity.set(Math.cos(angle) * this.speed * dt, Math.sin(angle) * this.speed * dt);
-		// if (up) this.body.velocity.y = -speed * dt;
-		// if (down) this.body.velocity.y = speed * dt;
-		// if (left) this.body.velocity.x = -speed * dt;
-		// if (right) this.body.velocity.x = speed * dt;
-		body.drag.x = body.drag.y = 1000 * 2;
+		var spd = this.personSpeedCal(dt);
+		this.body.velocity.set(Math.cos(angle) * spd, Math.sin(angle) * spd);
 	}
 
-	private function personSpeedCal():Float {
-		var playerSpeed:Float = WALKSPEED;
-		if (isRunning) {
-			playerSpeed = RUNSPEED;
+	private function personSpeedCal(dt:Float):Float {
+		var speed:Float = 0;
+		switch (this.state) {
+			case Run:
+				speed = RUNSPEED;
+			case Dodge:
+				speed = DODGESPEED;
+			case Walk:
+				speed = WALKSPEED;
+			case Attack, Idle, None:
+				speed = 0;
 		}
-		if (isDodging) {
-			playerSpeed = DODGESPEED;
-		}
-		return playerSpeed;
+		return ((speed * dt) * 50);
 	}
 
 	private function loadPersonData() {
@@ -204,6 +211,11 @@ class Person extends Entity {
 			case "downleft", "downright":
 				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
+	}
+
+	function set_state(s) {
+		state = s;
+		return s;
 	}
 
 	// Overide echo update loop
