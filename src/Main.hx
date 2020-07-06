@@ -101,8 +101,6 @@ class Main extends hxd.App {
 			entity.step(dt);
 		// step the world
 		world.step(dt);
-		//update player
-		if (player != null) player.update(dt);
 		#if debug
 		//if (Key.isPressed(Key.QWERTY_TILDE) || Key.isPressed(Key.TAB))
 		//	echo_debug_drawer.canvas.visible = !echo_debug_drawer.canvas.visible;

@@ -101,12 +101,6 @@ class Person extends Entity {
 			//this.movePerson(dx, dy);
 		}
 	}
-	public function update(dt:Float) {
-		if (up) this.body.velocity.y = -speed * dt;
-		if (down) this.body.velocity.y = speed * dt;
-		if (left) this.body.velocity.x = -speed * dt;
-		if (right) this.body.velocity.x = speed * dt;
-	}
 
 	private function movePerson(dx:Float, dy:Float) {
 	}
@@ -191,6 +185,9 @@ class Person extends Entity {
 	//Overide echo update loop
 	public override function step(dt:Float) {
 		super.step(dt);
-		
+		if (up) this.body.velocity.y = -speed * dt;
+		if (down) this.body.velocity.y = speed * dt;
+		if (left) this.body.velocity.x = -speed * dt;
+		if (right) this.body.velocity.x = speed * dt;
 	}
 }
