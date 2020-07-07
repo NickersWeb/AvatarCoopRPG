@@ -1,3 +1,4 @@
+import Person.Facing;
 import h2d.Tile;
 import h2d.Anim;
 import hxd.Res;
@@ -5,20 +6,20 @@ import echo.data.Options.BodyOptions;
 
 class PersonUtils {
 	public static function GetPerson(parent:h2d.Scene, body_options:BodyOptions, bendingType:String):Person {
-			switch (bendingType) {
-				case "air":
-					return new PersonAir(parent , body_options);
-				case "earth":
-					return new PersonAir(parent, body_options);
-				case "fire":
-					return new PersonAir(parent, body_options);
-				case "water":
-					return new PersonAir(parent, body_options);
-				case "avatar":
-					return new PersonAir(parent, body_options);
-				default:
-					return new PersonAir(parent, body_options);
-			}
+		switch (bendingType) {
+			case "air":
+				return new PersonAir(parent, body_options);
+			case "earth":
+				return new PersonAir(parent, body_options);
+			case "fire":
+				return new PersonAir(parent, body_options);
+			case "water":
+				return new PersonAir(parent, body_options);
+			case "avatar":
+				return new PersonAir(parent, body_options);
+			default:
+				return new PersonAir(parent, body_options);
+		}
 	}
 
 	public static function GetPersonGraphic(?gender:String = "m", ?bendingType:String = "air"):Tile {
@@ -118,18 +119,19 @@ class PersonUtils {
 		return tile;
 	}
 
-	public static function animCal(tile:Tile, height:Int, width:Int, size:Int, facing:String):Array<Tile> {
+	public static function animCal(tile:Tile, height:Int, width:Int, size:Int, facing:Facing):Array<Tile> {
 		var array:Array<Tile> = [];
 		for (y in 0...Std.int(tile.height / height)) {
 			for (x in 0...Std.int(tile.width / width)) {
-				array.push(tile.sub(x * size, y * size, width, height,  -0.5 * width, -0.5 * height));
+				array.push(tile.sub(x * size, y * size, width, height, -0.5 * width, -0.5 * height));
 			}
 		}
 		switch (facing) {
-			case "Right", "UpRight", "DownRight":
-				for (i in 0...array.length){
-				    array[i].flipX();
+			case Right, UpRight, DownRight:
+				for (i in 0...array.length) {
+					array[i].flipX();
 				}
+			default:
 		}
 		return array;
 	}
