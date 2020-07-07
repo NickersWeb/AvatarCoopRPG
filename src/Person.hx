@@ -221,19 +221,19 @@ class Person extends Entity {
 
 	function set_state(s) {
 		state = s;
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-		switch (s) {
-			case Run:
-				this.runAnimation(a);
-			case Walk:
-				this.walkAnimation(a);
-			case Dodge:
-				this.dodgeRollAnimation(a);
-			case Attack:
-			case Idle:
-				this.idleAnimation(a);
-			case None:
-		}
+		//var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+		// switch (s) {
+		// 	case Run:
+		// 		this.runAnimation(a);
+		// 	case Walk:
+		// 		this.walkAnimation(a);
+		// 	case Dodge:
+		// 		this.dodgeRollAnimation(a);
+		// 	case Attack:
+		// 	case Idle:
+		// 		this.idleAnimation(a);
+		// 	case None:
+		// }
 		return s;
 	}
 
@@ -241,5 +241,6 @@ class Person extends Entity {
 	public override function step(dt:Float) {
 		super.step(dt);
 		this.movePerson(dt);
+		this.personAnimation();
 	}
 }
