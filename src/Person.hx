@@ -22,6 +22,17 @@ enum State {
 	None;
 }
 
+enum Facing {
+	Up;
+	UpLeft;
+	UpRight;
+	Down;
+	DownLeft;
+	DownRight;
+	Left;
+	Right;
+}
+
 class Person extends Entity {
 	var WALKSPEED:Float = 95;
 	var RUNSPEED:Float = 200;
@@ -34,7 +45,7 @@ class Person extends Entity {
 	var state(default, set):State;
 
 	var gender:String = "m";
-	var facing:String = "downleft";
+	var facing(default, set):Facing;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -46,7 +57,7 @@ class Person extends Entity {
 	}
 
 	public function personAnimation() {
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing.getName());
 		switch (this.state) {
 			case Run:
 				this.runAnimation(a);
@@ -67,68 +78,61 @@ class Person extends Entity {
 		var right = hxd.Key.isDown(hxd.Key.D);
 		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
 
-		if (up || down)
-			body.velocity.x = 0;
-		if (left || right)
-			body.velocity.y = 0;
-
 		if (up && down) {
 			up = down = false;
 		}
 		if (left && right) {
 			left = right = false;
 		}
+		trace('up:$up , down: $down, left: $left, right: $right');
 		if (up || down || left || right) {
 			if (up) {
-				this.facing = "up";
+				this.facing = Up;
 				if (left) {
-					this.facing += "left";
+					this.facing = UpLeft;
 				} else if (right) {
-					this.facing += "right";
+					this.facing = UpRight;
 				}
 			} else if (down) {
-				this.facing = "down";
+				this.facing = Down;
 				if (left) {
-					this.facing += "left";
+					this.facing = DownLeft;
 				} else if (right) {
-					this.facing += "right";
+					this.facing = DownRight;
 				}
 			} else if (left) {
-				this.facing = "left";
+				this.facing = Left;
 			} else if (right) {
-				this.facing = "right";
+				this.facing = Right;
 			}
-			if(this.state != Run && shift){
-				this.state =  Run;
-			}else if(this.state != Walk && !shift){
-				this.state =  Walk;
+			if (this.state != Run && shift) {
+				this.state = Run;
+			} else if (this.state != Walk && !shift) {
+				this.state = Walk;
 			}
-			
 		} else {
 			this.state = Idle;
 		}
-		trace(this.facing);
-		trace(this.state);
 	}
 
 	private function movePerson(dt:Float) {
 		var newAngle:Float = 0;
 		switch (this.facing) {
-			case "up":
+			case Up:
 				newAngle = 270;
-			case "upleft":
+			case UpLeft:
 				newAngle = 225;
-			case "upright":
+			case UpRight:
 				newAngle = 315;
-			case "down":
+			case Down:
 				newAngle = 90;
-			case "downleft":
+			case DownLeft:
 				newAngle = 135;
-			case "downright":
+			case DownRight:
 				newAngle = 45;
-			case "left":
+			case Left:
 				newAngle = 180;
-			case "right":
+			case Right:
 				newAngle = 0;
 		}
 		var angle = hxd.Math.degToRad(newAngle);
@@ -158,15 +162,15 @@ class Person extends Entity {
 	private function walkAnimation(a:Array<Tile>) {
 		this.anim.speed = 8;
 		switch (facing) {
-			case "up":
+			case Up:
 				this.anim.play([for (i in 7...14 + 1) a[i]]);
-			case "down":
+			case Down:
 				this.anim.play([for (i in 39...46 + 1) a[i]]);
-			case "left", "right":
+			case Left, Right:
 				this.anim.play([for (i in 55...62 + 1) a[i]]);
-			case "upleft", "upright":
+			case UpLeft, UpRight:
 				this.anim.play([for (i in 23...30 + 1) a[i]]);
-			case "downleft", "downright":
+			case DownLeft, DownRight:
 				this.anim.play([for (i in 79...85 + 1) a[i]]);
 		}
 	}
@@ -174,15 +178,15 @@ class Person extends Entity {
 	private function runAnimation(a:Array<Tile>) {
 		this.anim.speed = 8;
 		switch (facing) {
-			case "up":
+			case Up:
 				this.anim.play([for (i in 15...22 + 1) a[i]]);
-			case "down":
+			case Down:
 				this.anim.play([for (i in 47...54 + 1) a[i]]);
-			case "left", "right":
+			case Left, Right:
 				this.anim.play([for (i in 71...77 + 1) a[i]]);
-			case "upleft", "upright":
+			case UpLeft, UpRight:
 				this.anim.play([for (i in 31...38 + 1) a[i]]);
-			case "downleft", "downright":
+			case DownLeft, DownRight:
 				this.anim.play([for (i in 63...70 + 1) a[i]]);
 		}
 	}
@@ -190,15 +194,15 @@ class Person extends Entity {
 	private function dodgeRollAnimation(a:Array<Tile>) {
 		this.anim.speed = 8;
 		switch (facing) {
-			case "up":
+			case Up:
 				this.anim.play([for (i in 94...95 + 1) a[i]]);
-			case "down":
+			case Down:
 				this.anim.play([for (i in 90...91 + 1) a[i]]);
-			case "left", "right":
+			case Left, Right:
 				this.anim.play([for (i in 88...89 + 1) a[i]]);
-			case "upleft", "upright":
+			case UpLeft, UpRight:
 				this.anim.play([for (i in 92...93 + 1) a[i]]);
-			case "downleft", "downright":
+			case DownLeft, DownRight:
 				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
 	}
@@ -206,22 +210,22 @@ class Person extends Entity {
 	private function idleAnimation(a:Array<Tile>) {
 		this.anim.speed = 0.5;
 		switch (facing) {
-			case "up":
+			case Up:
 				this.anim.play([for (i in 94...95 + 1) a[i]]);
-			case "down":
+			case Down:
 				this.anim.play([for (i in 90...91 + 1) a[i]]);
-			case "left", "right":
+			case Left, Right:
 				this.anim.play([for (i in 88...89 + 1) a[i]]);
-			case "upleft", "upright":
+			case UpLeft, UpRight:
 				this.anim.play([for (i in 92...93 + 1) a[i]]);
-			case "downleft", "downright":
+			case DownLeft, DownRight:
 				this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
 	}
 
-	function set_state(s) {
-		state = s;
-		//var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+	function set_facing(f) {
+		facing = f;
+		// var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
 		// switch (s) {
 		// 	case Run:
 		// 		this.runAnimation(a);
@@ -234,6 +238,24 @@ class Person extends Entity {
 		// 		this.idleAnimation(a);
 		// 	case None:
 		// }
+		return f;
+	}
+
+	function set_state(s) {
+		state = s;
+		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing.getName());
+		switch (s) {
+			case Run:
+				this.runAnimation(a);
+			case Walk:
+				this.walkAnimation(a);
+			case Dodge:
+				this.dodgeRollAnimation(a);
+			case Attack:
+			case Idle:
+				this.idleAnimation(a);
+			case None:
+		}
 		return s;
 	}
 
@@ -241,6 +263,5 @@ class Person extends Entity {
 	public override function step(dt:Float) {
 		super.step(dt);
 		this.movePerson(dt);
-		this.personAnimation();
 	}
 }
