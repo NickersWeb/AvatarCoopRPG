@@ -24,7 +24,7 @@ enum State {
 
 class Person extends Entity {
 	var WALKSPEED:Float = 95;
-	var RUNSPEED:Float = 150;
+	var RUNSPEED:Float = 200;
 	var DODGESPEED:Float = 300;
 	var BENDINGSPEED:Float = 850;
 
@@ -61,8 +61,6 @@ class Person extends Entity {
 	}
 
 	private function personEvent(event:Event) {
-		if (event.kind != EKeyDown && event.kind != EKeyUp)
-			return;
 		var up = hxd.Key.isDown(hxd.Key.W);
 		var down = hxd.Key.isDown(hxd.Key.S);
 		var left = hxd.Key.isDown(hxd.Key.A);
@@ -100,11 +98,17 @@ class Person extends Entity {
 			} else if (right) {
 				this.facing = "right";
 			}
-			this.state = shift ? Run : Walk;
+			if(this.state != Run && shift){
+				this.state =  Run;
+			}else if(this.state != Walk && !shift){
+				this.state =  Walk;
+			}
+			
 		} else {
 			this.state = Idle;
 		}
-		this.personAnimation();
+		trace(this.facing);
+		trace(this.state);
 	}
 
 	private function movePerson(dt:Float) {
@@ -168,6 +172,7 @@ class Person extends Entity {
 	}
 
 	private function runAnimation(a:Array<Tile>) {
+		this.anim.speed = 8;
 		switch (facing) {
 			case "up":
 				this.anim.play([for (i in 15...22 + 1) a[i]]);
@@ -183,6 +188,7 @@ class Person extends Entity {
 	}
 
 	private function dodgeRollAnimation(a:Array<Tile>) {
+		this.anim.speed = 8;
 		switch (facing) {
 			case "up":
 				this.anim.play([for (i in 94...95 + 1) a[i]]);
@@ -215,6 +221,19 @@ class Person extends Entity {
 
 	function set_state(s) {
 		state = s;
+		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+		switch (s) {
+			case Run:
+				this.runAnimation(a);
+			case Walk:
+				this.walkAnimation(a);
+			case Dodge:
+				this.dodgeRollAnimation(a);
+			case Attack:
+			case Idle:
+				this.idleAnimation(a);
+			case None:
+		}
 		return s;
 	}
 
