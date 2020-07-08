@@ -1,3 +1,5 @@
+import format.abc.Data.ABCData;
+import haxe.ds.List;
 import echo.Body;
 import echo.World;
 import h2d.Scene;
@@ -59,38 +61,61 @@ class Main extends hxd.App {
 		world.width = s2d.width;
 		world.height = s2d.height;
 	}
-	var player:Person;
+
 	private function loadTileMap() {
 		var map = new ogmo.Project(Res.data.AvatarWorld_ogmo, true);
 		var player:ogmo.Entity = null;
+		var enemies:List<ogmo.Entity> = new List<ogmo.Entity>();
 		for (level in map.levels) {
 			for (layer in level.layers) {
 				for (entity in layer.entities) {
 					switch (entity.name) {
 						case 'player':
 							player = entity;
-							
+							case 'enemy':
+								enemies.add(entity);
 					}
 				}
 				layer.render(s2d);
 			}
 		}
 		loadPlayer(player);
+		loadLevelEnemies(enemies);
 	}
-	private function loadPlayer(entity:ogmo.Entity) {
+	private function loadLevelEnemies(enemies:List<ogmo.Entity>){
+		for(entity in enemies){
+			loadEnemy(entity);
+		}
+	}
+	private function loadEnemy(entity:ogmo.Entity) {
 		// Need somewhere to store data.
-		player = PersonUtils.GetPerson(s2d, {
+		var enemy:PersonEnemy = new PersonEnemy(s2d, {
 			x: entity.x,
 			y: entity.y,
 			drag_length: 20,
 			elasticity: 0.2,
 			shape: {
-			  type: CIRCLE,
-			  radius: 16,
+				type: CIRCLE,
+				radius: 16,
 			}
-		  }, "air");
+		});
+		enemy.personAnimation();
+	}
+
+	private function loadPlayer(entity:ogmo.Entity) {
+		// Need somewhere to store data.
+		var player:Person = PersonUtils.GetPerson(s2d, {
+			x: entity.x,
+			y: entity.y,
+			drag_length: 20,
+			elasticity: 0.2,
+			shape: {
+				type: CIRCLE,
+				radius: 16,
+			}
+		}, "air");
 		player.name = "player";
-		//player.setPosition(entity.x, entity.y);
+		// player.setPosition(entity.x, entity.y);
 		player.personAnimation();
 	}
 
@@ -103,7 +128,7 @@ class Main extends hxd.App {
 		// step the world
 		world.step(dt);
 		#if debug
-		//if (Key.isPressed(Key.QWERTY_TILDE) || Key.isPressed(Key.TAB))
+		// if (Key.isPressed(Key.QWERTY_TILDE) || Key.isPressed(Key.TAB))
 		//	echo_debug_drawer.canvas.visible = !echo_debug_drawer.canvas.visible;
 		echo_debug_drawer.draw(world);
 		#end
