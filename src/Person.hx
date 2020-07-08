@@ -57,7 +57,7 @@ class Person extends Entity {
 	}
 
 	public function personAnimation() {
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing.getName());
+		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
 		switch (this.state) {
 			case Run:
 				this.runAnimation(a);
@@ -243,7 +243,7 @@ class Person extends Entity {
 
 	function set_state(s) {
 		state = s;
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing.getName());
+		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
 		switch (s) {
 			case Run:
 				this.runAnimation(a);
