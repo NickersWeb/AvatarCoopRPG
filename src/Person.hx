@@ -114,8 +114,6 @@ class Person extends Entity {
 		} else {
 			this.state = Idle;
 		}
-		//trace("state " + this.state);
-		set_state(this.state);
 	}
 
 	private function movePerson(dt:Float) {
