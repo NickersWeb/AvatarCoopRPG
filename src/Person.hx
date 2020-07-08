@@ -80,11 +80,12 @@ class Person extends Entity {
 
 		if (up && down) {
 			up = down = false;
+			return;
 		}
 		if (left && right) {
 			left = right = false;
+			return;
 		}
-		trace('up:$up , down: $down, left: $left, right: $right');
 		if (up || down || left || right) {
 			if (up) {
 				this.facing = Up;
@@ -113,6 +114,8 @@ class Person extends Entity {
 		} else {
 			this.state = Idle;
 		}
+		//trace("state " + this.state);
+		set_state(this.state);
 	}
 
 	private function movePerson(dt:Float) {
