@@ -1,3 +1,8 @@
+import h2d.Drawable;
+import hxd.Event;
+import h2d.Interactive;
+import echo.Line;
+import hxd.Cursor;
 import format.abc.Data.ABCData;
 import haxe.ds.List;
 import echo.Body;
@@ -19,7 +24,11 @@ import hxd.Key;
 
 class Main extends hxd.App {
 	public static var world:World;
-
+	private static var cursor:Body;
+	private static var line:Line;
+	private static var player:Person;
+	private static var interaction:Interactive;
+	
 	#if debug
 	public var echo_debug_drawer:HeapsDebug;
 	#end
@@ -29,13 +38,18 @@ class Main extends hxd.App {
 		new Main();
 	}
 
+	// avatar game
+	// run and walk
+	// move character facing direction
+	// mouse on left click, "aim". Only allow walking attack speeds.
+	// character will face mouse direction
+	// dodge on right
 	override function init() {
 		super.init();
-
 		// Create a new echo World, set to the size of the heaps engine
 		world = new World({
-			width: 800,
-			height: 800,
+			width: s2d.width,
+			height: s2d.height,
 			gravity_y: 0
 		});
 		var body = new Body({
@@ -50,7 +64,13 @@ class Main extends hxd.App {
 		});
 		body.velocity.x = 10;
 		world.add(body);
+
+		loadCursor();
 		loadTileMap();
+		loadLine();
+		interaction = new h2d.Interactive(world.width, world.height, player);
+		interaction.onClick = onPlayerClickEvent;
+		
 		#if debug
 		echo_debug_drawer = new HeapsDebug(s2d);
 		#end
@@ -72,8 +92,8 @@ class Main extends hxd.App {
 					switch (entity.name) {
 						case 'player':
 							player = entity;
-							case 'enemy':
-								enemies.add(entity);
+						case 'enemy':
+							enemies.add(entity);
 					}
 				}
 				layer.render(s2d);
@@ -82,11 +102,13 @@ class Main extends hxd.App {
 		loadPlayer(player);
 		loadLevelEnemies(enemies);
 	}
-	private function loadLevelEnemies(enemies:List<ogmo.Entity>){
-		for(entity in enemies){
+
+	private function loadLevelEnemies(enemies:List<ogmo.Entity>) {
+		for (entity in enemies) {
 			loadEnemy(entity);
 		}
 	}
+
 	private function loadEnemy(entity:ogmo.Entity) {
 		// Need somewhere to store data.
 		var enemy:PersonEnemy = new PersonEnemy(s2d, {
@@ -105,7 +127,7 @@ class Main extends hxd.App {
 	private function loadPlayer(entity:ogmo.Entity) {
 		//var player:Player = new Player(s2d);
 		// Need somewhere to store data.
-		var player:Person = PersonUtils.GetPerson(s2d, {
+		player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
 			drag_length: 20,
@@ -120,9 +142,39 @@ class Main extends hxd.App {
 		player.personAnimation();
 	}
 
+	private function updateMousePlayer(dt:Float) {
+		//line.start.set(player.body.x, player.body.y);
+		// step cursor
+		cursor.velocity.set(s2d.mouseX - cursor.x, s2d.mouseY - cursor.y);
+		cursor.velocity *= 100;
+		line.end.set(cursor.velocity.x, cursor.velocity.y);
+		echo_debug_drawer.draw_line(line.start.x, line.start.y, line.end.x, line.end.y, echo_debug_drawer.intersection_color);
+	}
+
+	private function loadLine() {
+		line = Line.get(world.width / 2, world.height / 2, world.width / 2, world.height / 2); 
+		//Line.get(player.body.x, player.body.y);
+	}
+
+	private function loadCursor() {
+		cursor = new Body({
+			x: world.width * 0.5,
+			y: world.height * 0.5,
+			shape: {
+				type: CIRCLE,
+				radius: 16
+			}
+		});
+		world.add(cursor);
+	}
+
+	private function onPlayerClickEvent(e:Event) {
+		trace(e.kind.getName());
+	}
+
 	override function update(dt:Float) {
 		super.update(dt);
-
+		updateMousePlayer(dt);
 		// step all the entities
 		for (entity in Entity.all)
 			entity.step(dt);

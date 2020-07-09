@@ -42,10 +42,10 @@ class Person extends Entity {
 	var tile:Tile;
 	var anim:Anim = new Anim();
 	var atkIndex:Int = 0;
-	var state(default, set):State;
+	var state(default, set):State = Idle;
 
 	var gender:String = "m";
-	var facing(default, set):Facing;
+	var facing(default, set):Facing = DownLeft;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -86,30 +86,33 @@ class Person extends Entity {
 			left = right = false;
 			return;
 		}
+		
 		if (up || down || left || right) {
+			if (shift) {
+				this.state = Run;
+			} else {
+				this.state = Walk;
+			}
 			if (up) {
-				this.facing = Up;
 				if (left) {
 					this.facing = UpLeft;
 				} else if (right) {
 					this.facing = UpRight;
+				} else {
+					this.facing = Up;
 				}
 			} else if (down) {
-				this.facing = Down;
 				if (left) {
 					this.facing = DownLeft;
 				} else if (right) {
 					this.facing = DownRight;
+				} else {
+					this.facing = Down;
 				}
 			} else if (left) {
 				this.facing = Left;
 			} else if (right) {
 				this.facing = Right;
-			}
-			if (this.state != Run && shift) {
-				this.state = Run;
-			} else if (this.state != Walk && !shift) {
-				this.state = Walk;
 			}
 		} else {
 			this.state = Idle;
@@ -225,38 +228,45 @@ class Person extends Entity {
 	}
 
 	function set_facing(f) {
-		facing = f;
-		// var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-		// switch (s) {
-		// 	case Run:
-		// 		this.runAnimation(a);
-		// 	case Walk:
-		// 		this.walkAnimation(a);
-		// 	case Dodge:
-		// 		this.dodgeRollAnimation(a);
-		// 	case Attack:
-		// 	case Idle:
-		// 		this.idleAnimation(a);
-		// 	case None:
-		// }
+		if (f != this.facing) {
+			this.facing = f;
+			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+			trace(this.facing);
+			switch (this.state) {
+				case Run:
+					this.runAnimation(a);
+				case Walk:
+					this.walkAnimation(a);
+				case Dodge:
+					this.dodgeRollAnimation(a);
+				case Attack:
+				case Idle:
+					this.idleAnimation(a);
+				case None:
+			}
+		}
+
 		return f;
 	}
 
 	function set_state(s) {
-		state = s;
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-		switch (s) {
-			case Run:
-				this.runAnimation(a);
-			case Walk:
-				this.walkAnimation(a);
-			case Dodge:
-				this.dodgeRollAnimation(a);
-			case Attack:
-			case Idle:
-				this.idleAnimation(a);
-			case None:
+		if(s != this.state){
+			this.state = s;
+			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+			switch (this.state) {
+				case Run:
+					this.runAnimation(a);
+				case Walk:
+					this.walkAnimation(a);
+				case Dodge:
+					this.dodgeRollAnimation(a);
+				case Attack:
+				case Idle:
+					this.idleAnimation(a);
+				case None:
+			}
 		}
+		
 		return s;
 	}
 

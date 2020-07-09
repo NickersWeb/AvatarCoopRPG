@@ -8,8 +8,7 @@ class PersonEnemy extends Person
 		super(parent, body_options);
 		this.name = "personenemy";
 		this.tile = PersonUtils.GetPersonGraphic(this.gender, "air");
-		this.anims = PersonUtils.GetPersonGraphicAnimations("air", this.anims, this.tile);
-		this.facing = DownLeft;
+        this.facing = DownLeft;
         this.state = Idle;
         parent.getScene().removeEventListener(personEvent);
 		// this does not work, need to iterate the tile in the map.
