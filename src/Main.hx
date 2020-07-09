@@ -103,6 +103,7 @@ class Main extends hxd.App {
 	}
 
 	private function loadPlayer(entity:ogmo.Entity) {
+		//var player:Player = new Player(s2d);
 		// Need somewhere to store data.
 		var player:Person = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
