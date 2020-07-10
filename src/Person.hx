@@ -47,7 +47,6 @@ class Person extends Entity {
 
 	var gender:String = "m";
 	var facing(default, set):Facing = DownLeft;
-	var interaction:Interactive;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -55,21 +54,19 @@ class Person extends Entity {
 		super(parent, body_options);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
-		interaction = new h2d.Interactive(Main.world.width, Main.world.height, this);
-		interaction.onClick = personClickEvent;
-		interaction.onKeyDown = personEvent;
+		this.anim.onAnimEnd = onAnimEnd;
+		hxd.Window.getInstance().addEventTarget(personEvent);
 	}
 
 	private function onAnimEnd() {
-		switch (this.state) {
-			case Run:
-			case Dodge:
-				this.state = Run;
-			case Walk:
-				this.state = Walk;
-			case Idle, Attack, None:
-				this.state = Idle;
-		}
+		//Needs more work.
+		// switch (this.state) {
+		// 	case Run:
+		// 	case Dodge:
+		// 		this.state = Run;
+		// 	case Idle, Walk, Attack, None:
+		// 		this.state = Idle;
+		// }
 	}
 
 	public function personAnimation() {
@@ -87,18 +84,6 @@ class Person extends Entity {
 		}
 	}
 
-	private function personClickEvent(event:Event) {
-		var rClick = hxd.Key.isDown(hxd.Key.MOUSE_RIGHT);
-		var lClick = hxd.Key.isDown(hxd.Key.MOUSE_LEFT);
-		trace('$event.keyCode personClickEvent');
-		if (rClick) {
-			if (!this.state.equals(Idle)) {
-				this.state = Dodge;
-			}
-		} else if (lClick) {
-			this.state = Attack;
-		}
-	}
 
 	private function personEvent(event:Event) {
 		var up = hxd.Key.isDown(hxd.Key.W);
@@ -106,7 +91,10 @@ class Person extends Entity {
 		var left = hxd.Key.isDown(hxd.Key.A);
 		var right = hxd.Key.isDown(hxd.Key.D);
 		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
-		trace('$event.keyCode personEvent');
+		var rClick = hxd.Key.isDown(hxd.Key.MOUSE_RIGHT);
+		var lClick = hxd.Key.isDown(hxd.Key.MOUSE_LEFT);
+		
+		
 		if (up && down) {
 			up = down = false;
 			return;
@@ -115,9 +103,18 @@ class Person extends Entity {
 			left = right = false;
 			return;
 		}
-
+		if(rClick && lClick){
+			rClick = lClick = false;
+			return;
+		}
 		if (up || down || left || right) {
-			if (shift) {
+			if (rClick) {
+				if (!this.state.equals(Idle)) {
+					this.state = Dodge;
+				}
+			} else if (lClick) {
+				this.state = Attack;
+			}else if (shift) {
 				this.state = Run;
 			} else {
 				this.state = Walk;
@@ -239,7 +236,7 @@ class Person extends Entity {
 			case UpLeft, UpRight:
 				this.anim.play([for (i in 100...102 + 1) a[i]]);
 		}
-		this.anim.onAnimEnd = onAnimEnd;
+
 	}
 
 	private function idleAnimation(a:Array<Tile>) {
