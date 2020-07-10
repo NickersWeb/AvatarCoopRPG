@@ -1,3 +1,4 @@
+import haxe.macro.Expr.Case;
 import h3d.pass.Default;
 import hxmath.math.Vector2;
 import hxd.Window;
@@ -36,7 +37,7 @@ enum Facing {
 class Person extends Entity {
 	var WALKSPEED:Float = 95;
 	var RUNSPEED:Float = 200;
-	var DODGESPEED:Float = 300;
+	var DODGESPEED:Float = 500;
 	var BENDINGSPEED:Float = 850;
 
 	var tile:Tile;
@@ -46,6 +47,7 @@ class Person extends Entity {
 
 	var gender:String = "m";
 	var facing(default, set):Facing = DownLeft;
+	var interaction:Interactive;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -53,7 +55,21 @@ class Person extends Entity {
 		super(parent, body_options);
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
-		parent.getScene().addEventListener(personEvent);
+		interaction = new h2d.Interactive(Main.world.width, Main.world.height, this);
+		interaction.onClick = personClickEvent;
+		interaction.onKeyDown = personEvent;
+	}
+
+	private function onAnimEnd() {
+		switch (this.state) {
+			case Run:
+			case Dodge:
+				this.state = Run;
+			case Walk:
+				this.state = Walk;
+			case Idle, Attack, None:
+				this.state = Idle;
+		}
 	}
 
 	public function personAnimation() {
@@ -71,13 +87,26 @@ class Person extends Entity {
 		}
 	}
 
+	private function personClickEvent(event:Event) {
+		var rClick = hxd.Key.isDown(hxd.Key.MOUSE_RIGHT);
+		var lClick = hxd.Key.isDown(hxd.Key.MOUSE_LEFT);
+		trace('$event.keyCode personClickEvent');
+		if (rClick) {
+			if (!this.state.equals(Idle)) {
+				this.state = Dodge;
+			}
+		} else if (lClick) {
+			this.state = Attack;
+		}
+	}
+
 	private function personEvent(event:Event) {
 		var up = hxd.Key.isDown(hxd.Key.W);
 		var down = hxd.Key.isDown(hxd.Key.S);
 		var left = hxd.Key.isDown(hxd.Key.A);
 		var right = hxd.Key.isDown(hxd.Key.D);
 		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
-
+		trace('$event.keyCode personEvent');
 		if (up && down) {
 			up = down = false;
 			return;
@@ -86,13 +115,14 @@ class Person extends Entity {
 			left = right = false;
 			return;
 		}
-		
+
 		if (up || down || left || right) {
 			if (shift) {
 				this.state = Run;
 			} else {
 				this.state = Walk;
 			}
+
 			if (up) {
 				if (left) {
 					this.facing = UpLeft;
@@ -199,16 +229,17 @@ class Person extends Entity {
 		this.anim.speed = 8;
 		switch (facing) {
 			case Up:
-				this.anim.play([for (i in 94...95 + 1) a[i]]);
-			case Down:
-				this.anim.play([for (i in 90...91 + 1) a[i]]);
-			case Left, Right:
-				this.anim.play([for (i in 88...89 + 1) a[i]]);
-			case UpLeft, UpRight:
-				this.anim.play([for (i in 92...93 + 1) a[i]]);
+				this.anim.play([for (i in 96...99 + 1) a[i]]);
 			case DownLeft, DownRight:
-				this.anim.play([for (i in 86...87 + 1) a[i]]);
+				this.anim.play([for (i in 100...102 + 1) a[i]]);
+			case Down:
+				this.anim.play([for (i in 103...108 + 1) a[i]]);
+			case Left, Right:
+				this.anim.play([for (i in 109...112 + 1) a[i]]);
+			case UpLeft, UpRight:
+				this.anim.play([for (i in 100...102 + 1) a[i]]);
 		}
+		this.anim.onAnimEnd = onAnimEnd;
 	}
 
 	private function idleAnimation(a:Array<Tile>) {
@@ -231,7 +262,6 @@ class Person extends Entity {
 		if (f != this.facing) {
 			this.facing = f;
 			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-			trace(this.facing);
 			switch (this.state) {
 				case Run:
 					this.runAnimation(a);
@@ -250,7 +280,7 @@ class Person extends Entity {
 	}
 
 	function set_state(s) {
-		if(s != this.state){
+		if (s != this.state) {
 			this.state = s;
 			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
 			switch (this.state) {
@@ -266,7 +296,7 @@ class Person extends Entity {
 				case None:
 			}
 		}
-		
+
 		return s;
 	}
 
