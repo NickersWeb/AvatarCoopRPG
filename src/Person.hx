@@ -23,13 +23,14 @@ enum State {
 	None;
 }
 
+// Commented out 8d to 4d
 enum Facing {
 	Up;
-	UpLeft;
-	UpRight;
+	// UpLeft;
+	// UpRight;
 	Down;
-	DownLeft;
-	DownRight;
+	// DownLeft;
+	// DownRight;
 	Left;
 	Right;
 }
@@ -46,7 +47,8 @@ class Person extends Entity {
 	var state(default, set):State = Idle;
 
 	var gender:String = "m";
-	var facing(default, set):Facing = DownLeft;
+	// Commented out 8d to 4d
+	var facing(default, set):Facing = Down; // DownLeft;
 
 	public var anims:Map<String, Array<Tile>> = new Map<String, Array<Tile>>();
 
@@ -120,21 +122,25 @@ class Person extends Entity {
 				}
 
 				if (up) {
-					if (left) {
-						this.facing = UpLeft;
-					} else if (right) {
-						this.facing = UpRight;
-					} else {
-						this.facing = Up;
-					}
+					this.facing = Up;
+					// Commented out 8d to 4d
+					// if (left) {
+					// 	this.facing = UpLeft;
+					// } else if (right) {
+					// 	this.facing = UpRight;
+					// } else {
+					// 	this.facing = Up;
+					// }
 				} else if (down) {
-					if (left) {
-						this.facing = DownLeft;
-					} else if (right) {
-						this.facing = DownRight;
-					} else {
-						this.facing = Down;
-					}
+					// Commented out 8d to 4d
+					// if (left) {
+					// 	this.facing = DownLeft;
+					// } else if (right) {
+					// 	this.facing = DownRight;
+					// } else {
+					// 	this.facing = Down;
+					// }
+					this.facing = Down;
 				} else if (left) {
 					this.facing = Left;
 				} else if (right) {
@@ -151,16 +157,16 @@ class Person extends Entity {
 		switch (this.facing) {
 			case Up:
 				newAngle = 270;
-			case UpLeft:
-				newAngle = 225;
-			case UpRight:
-				newAngle = 315;
+			// case UpLeft:
+			// 	newAngle = 225;
+			// case UpRight:
+			// 	newAngle = 315;
 			case Down:
 				newAngle = 90;
-			case DownLeft:
-				newAngle = 135;
-			case DownRight:
-				newAngle = 45;
+			// case DownLeft:
+			// 	newAngle = 135;
+			// case DownRight:
+			// 	newAngle = 45;
 			case Left:
 				newAngle = 180;
 			case Right:
@@ -199,10 +205,11 @@ class Person extends Entity {
 				this.anim.play([for (i in 39...46 + 1) a[i]]);
 			case Left, Right:
 				this.anim.play([for (i in 55...62 + 1) a[i]]);
-			case UpLeft, UpRight:
-				this.anim.play([for (i in 23...30 + 1) a[i]]);
-			case DownLeft, DownRight:
-				this.anim.play([for (i in 79...85 + 1) a[i]]);
+				// Commented out 8d to 4d
+				// case UpLeft, UpRight:
+				// 	this.anim.play([for (i in 23...30 + 1) a[i]]);
+				// case DownLeft, DownRight:
+				// 	this.anim.play([for (i in 79...85 + 1) a[i]]);
 		}
 	}
 
@@ -215,10 +222,11 @@ class Person extends Entity {
 				this.anim.play([for (i in 47...54 + 1) a[i]]);
 			case Left, Right:
 				this.anim.play([for (i in 71...77 + 1) a[i]]);
-			case UpLeft, UpRight:
-				this.anim.play([for (i in 31...38 + 1) a[i]]);
-			case DownLeft, DownRight:
-				this.anim.play([for (i in 63...70 + 1) a[i]]);
+				// Commented out 8d to 4d
+				// case UpLeft, UpRight:
+				// 	this.anim.play([for (i in 31...38 + 1) a[i]]);
+				// case DownLeft, DownRight:
+				// 	this.anim.play([for (i in 63...70 + 1) a[i]]);
 		}
 	}
 
@@ -227,14 +235,15 @@ class Person extends Entity {
 		switch (facing) {
 			case Up:
 				this.anim.play([for (i in 96...99 + 1) a[i]]);
-			case DownLeft, DownRight:
-				this.anim.play([for (i in 100...102 + 1) a[i]]);
+			// Commented out 8d to 4d
+			// case DownLeft, DownRight:
+			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
+			// 			case UpLeft, UpRight:
+			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
 			case Down:
 				this.anim.play([for (i in 103...108 + 1) a[i]]);
 			case Left, Right:
 				this.anim.play([for (i in 109...112 + 1) a[i]]);
-			case UpLeft, UpRight:
-				this.anim.play([for (i in 100...102 + 1) a[i]]);
 		}
 	}
 
@@ -247,10 +256,11 @@ class Person extends Entity {
 				this.anim.play([for (i in 90...91 + 1) a[i]]);
 			case Left, Right:
 				this.anim.play([for (i in 88...89 + 1) a[i]]);
-			case UpLeft, UpRight:
-				this.anim.play([for (i in 92...93 + 1) a[i]]);
-			case DownLeft, DownRight:
-				this.anim.play([for (i in 86...87 + 1) a[i]]);
+				// Commented out 8d to 4d
+				// case UpLeft, UpRight:
+				// 	this.anim.play([for (i in 92...93 + 1) a[i]]);
+				// case DownLeft, DownRight:
+				// 	this.anim.play([for (i in 86...87 + 1) a[i]]);
 		}
 	}
 

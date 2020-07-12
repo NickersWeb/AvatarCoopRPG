@@ -12,7 +12,8 @@ class PersonAir extends Person {
 		super(parent, body_options);
 		this.name = "personair";
 		this.tile = PersonUtils.GetPersonGraphic(this.gender, "air");
-		this.facing = DownLeft;
+		//Commented out 8d to 4d
+		this.facing = Down; //DownLeft;
 		this.state = Idle;
 		// this does not work, need to iterate the tile in the map.
 	}

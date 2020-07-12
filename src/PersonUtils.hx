@@ -127,7 +127,9 @@ class PersonUtils {
 			}
 		}
 		switch (facing) {
-			case Right, UpRight, DownRight:
+			case Right:
+		    //Commented out 8d to 4d
+			//, UpRight, DownRight:
 				for (i in 0...array.length) {
 					array[i].flipX();
 				}
