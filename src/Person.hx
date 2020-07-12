@@ -55,18 +55,18 @@ class Person extends Entity {
 		this.anim = new Anim(null, 10, this);
 		loadPersonData();
 		this.anim.onAnimEnd = onAnimEnd;
-		hxd.Window.getInstance().addEventTarget(personEvent);
+		this.parent.getScene().addEventListener(personEvent);
 	}
 
 	private function onAnimEnd() {
-		//Needs more work.
-		// switch (this.state) {
-		// 	case Run:
-		// 	case Dodge:
-		// 		this.state = Run;
-		// 	case Idle, Walk, Attack, None:
-		// 		this.state = Idle;
-		// }
+		// Needs more work.
+		switch (this.state) {
+			case Run:
+			case Dodge:
+				this.state = Run;
+			case Idle, Walk, Attack, None:
+				this.state = Idle;
+		}
 	}
 
 	public function personAnimation() {
@@ -84,17 +84,15 @@ class Person extends Entity {
 		}
 	}
 
-
 	private function personEvent(event:Event) {
 		var up = hxd.Key.isDown(hxd.Key.W);
 		var down = hxd.Key.isDown(hxd.Key.S);
 		var left = hxd.Key.isDown(hxd.Key.A);
 		var right = hxd.Key.isDown(hxd.Key.D);
 		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
-		var rClick = hxd.Key.isDown(hxd.Key.MOUSE_RIGHT);
-		var lClick = hxd.Key.isDown(hxd.Key.MOUSE_LEFT);
-		
-		
+		var rClick = hxd.Key.isPressed(hxd.Key.MOUSE_RIGHT);
+		var lClick = hxd.Key.isPressed(hxd.Key.MOUSE_LEFT);
+
 		if (up && down) {
 			up = down = false;
 			return;
@@ -103,46 +101,48 @@ class Person extends Entity {
 			left = right = false;
 			return;
 		}
-		if(rClick && lClick){
+		if (rClick && lClick) {
 			rClick = lClick = false;
 			return;
 		}
-		if (up || down || left || right) {
-			if (rClick) {
-				if (!this.state.equals(Idle)) {
-					this.state = Dodge;
+		if (!this.state.equals(Dodge)) {
+			if (up || down || left || right) {
+				if (rClick) {
+					if (!this.state.equals(Idle)) {
+						this.state = Dodge;
+					}
+				} else if (lClick) {
+					this.state = Attack;
+				} else if (shift) {
+					this.state = Run;
+				} else {
+					this.state = Walk;
 				}
-			} else if (lClick) {
-				this.state = Attack;
-			}else if (shift) {
-				this.state = Run;
-			} else {
-				this.state = Walk;
-			}
 
-			if (up) {
-				if (left) {
-					this.facing = UpLeft;
+				if (up) {
+					if (left) {
+						this.facing = UpLeft;
+					} else if (right) {
+						this.facing = UpRight;
+					} else {
+						this.facing = Up;
+					}
+				} else if (down) {
+					if (left) {
+						this.facing = DownLeft;
+					} else if (right) {
+						this.facing = DownRight;
+					} else {
+						this.facing = Down;
+					}
+				} else if (left) {
+					this.facing = Left;
 				} else if (right) {
-					this.facing = UpRight;
-				} else {
-					this.facing = Up;
+					this.facing = Right;
 				}
-			} else if (down) {
-				if (left) {
-					this.facing = DownLeft;
-				} else if (right) {
-					this.facing = DownRight;
-				} else {
-					this.facing = Down;
-				}
-			} else if (left) {
-				this.facing = Left;
-			} else if (right) {
-				this.facing = Right;
+			} else {
+				this.state = Idle;
 			}
-		} else {
-			this.state = Idle;
 		}
 	}
 
@@ -236,7 +236,6 @@ class Person extends Entity {
 			case UpLeft, UpRight:
 				this.anim.play([for (i in 100...102 + 1) a[i]]);
 		}
-
 	}
 
 	private function idleAnimation(a:Array<Tile>) {

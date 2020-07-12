@@ -18,10 +18,6 @@ class PersonEnemy extends Person
         //move enemy randomly 
         //need raycasting or something to see enemy.
     }
-    override function personEvent(event:Event) {
-        //super.personEvent(event);
-        trace(event.kind);
-    }
     override function step(dt:Float) {
         super.step(dt);
     }
