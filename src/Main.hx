@@ -50,19 +50,6 @@ class Main extends hxd.App {
 			height: s2d.height,
 			gravity_y: 0
 		});
-		var body = new Body({
-			x: 50,
-			y: 50,
-			elasticity: 0.3,
-			shape: {
-				type: RECT,
-				width: 50,
-				height: 50
-			}
-		});
-		body.velocity.x = 10;
-		world.add(body);
-
 		loadCursor();
 		loadTileMap();
 		loadLine();
@@ -121,9 +108,9 @@ class Main extends hxd.App {
 	}
 
 	private function loadPlayer(entity:ogmo.Entity) {
-		//var player:Player = new Player(s2d);
+		var player = new Player(s2d,entity.x,entity.y);
 		// Need somewhere to store data.
-		player = PersonUtils.GetPerson(s2d, {
+		/*player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
 			drag_length: 20,
@@ -135,7 +122,7 @@ class Main extends hxd.App {
 		}, "air");
 		player.name = "player";
 		// player.setPosition(entity.x, entity.y);
-		player.personAnimation();
+		player.personAnimation();*/
 	}
 
 	private function updateMousePlayer(dt:Float) {
