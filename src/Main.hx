@@ -1,6 +1,5 @@
 import h2d.Drawable;
 import hxd.Event;
-import h2d.Interactive;
 import echo.Line;
 import hxd.Cursor;
 import format.abc.Data.ABCData;
@@ -27,7 +26,6 @@ class Main extends hxd.App {
 	private static var cursor:Body;
 	private static var line:Line;
 	private static var player:Person;
-	private static var interaction:Interactive;
 	
 	#if debug
 	public var echo_debug_drawer:HeapsDebug;
@@ -68,8 +66,6 @@ class Main extends hxd.App {
 		loadCursor();
 		loadTileMap();
 		loadLine();
-		interaction = new h2d.Interactive(world.width, world.height, player);
-		interaction.onClick = onPlayerClickEvent;
 		
 		#if debug
 		echo_debug_drawer = new HeapsDebug(s2d);
@@ -166,10 +162,6 @@ class Main extends hxd.App {
 			}
 		});
 		world.add(cursor);
-	}
-
-	private function onPlayerClickEvent(e:Event) {
-		trace(e.kind.getName());
 	}
 
 	override function update(dt:Float) {
