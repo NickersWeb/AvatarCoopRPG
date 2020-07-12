@@ -66,7 +66,7 @@ class Main extends hxd.App {
 		loadCursor();
 		loadTileMap();
 		loadLine();
-		
+		new Fps(150,s2d);
 		#if debug
 		echo_debug_drawer = new HeapsDebug(s2d);
 		#end
