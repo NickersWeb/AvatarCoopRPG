@@ -1,3 +1,4 @@
+import hxd.Window;
 import h2d.Drawable;
 import hxd.Event;
 import echo.Line;
@@ -150,6 +151,11 @@ class Main extends hxd.App {
 			}
 		});
 		world.add(cursor);
+		#if hlsdl
+		sdl.Cursor.show(false);
+		#elseif hldx
+		dx.Cursor.show(false);
+		#end
 	}
 
 	override function update(dt:Float) {

@@ -2,7 +2,8 @@
 -main Main
 -lib heaps
 -lib echo
--lib hlsdl
+#-lib hlsdl
+-lib hldx
 -lib hlopenal
 -lib heapsOgmo
 -hl app.hl
