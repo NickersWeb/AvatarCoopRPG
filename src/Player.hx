@@ -45,8 +45,8 @@ class Player extends Entity {
         super(parent,{
             x: x,
             y: y,
-            drag_x: 170,
-            drag_y: 170,
+            drag_x: 200,
+            drag_y: 200,
 			elasticity: 0.2,
 			shape: {
 				type: CIRCLE,
@@ -56,42 +56,50 @@ class Player extends Entity {
         a = Static.getTiles(Res.images.player.sPlayerMaleAnimations.toTile(),64);
         anim = new Anim(null,8,this);
         //anim.loop = false;
-        anim.onAnimEnd = function()
-        {
+        anim.onAnimEnd = function() {
             animDone = true;
         }
     }
     var speed:Float = 0;
-    var toggle:Bool = false;
+    var disabled:Bool = false;
     override function sync(ctx:RenderContext) {
         super.sync(ctx);
-        if (toggle = !toggle) return;
         var x = 0.0;
         var y = 0.0;
         speed = WALKSPEED;
         state = Walk;
+        if (Key.isPressed(Key.X)) disabled = !disabled;
+        if (disabled) return;
         if (Key.isDown(Key.W) || Key.isDown(Key.UP)) y--;
         if (Key.isDown(Key.S) || Key.isDown(Key.DOWN)) y++;
         if (Key.isDown(Key.A) || Key.isDown(Key.LEFT)) x--;
         if (Key.isDown(Key.D) || Key.isDown(Key.RIGHT)) x++;
+        //facing
+        if (Math.abs(x) > 0) {
+            facing = x > 0 ? Right : Left;
+            scaleX = x > 0 ? -1 : 1;
+        }
+        if (Math.abs(y) > 0) facing = y > 0 ? Down : Up;
+        //run
         if (Key.isDown(Key.SHIFT)) {
+            if (oldState == state && oldFacing != facing) {
+                if (body.velocity.x != 0) body.velocity.x /= 2;
+                if (body.velocity.y != 0) body.velocity.y /= 2;
+            }
             state = Run;
             speed = RUNSPEED;
-        }else{
-            if (Math.abs(body.velocity.x) > WALKSPEED) body.velocity.x = WALKSPEED * x;
-            if (Math.abs(body.velocity.y) > RUNSPEED) body.velocity.y = WALKSPEED * y;
         }
         if (y == 0 && x == 0) {
+            if (oldState == Run) {
+                if (body.velocity.x != 0) body.velocity.x /= 2;
+                if (body.velocity.y != 0) body.velocity.y /= 2;
+            }
             state = Idle;
         }else{
-            if (x != 0 && y != 0) speed /= 2;
-            if (Math.abs(x) > 0) {
-                facing = x > 0 ? Right : Left;
-                scaleX = x > 0 ? -1 : 1;
-            }
-            if (Math.abs(y) > 0) facing = y > 0 ? Down : Up;
-            body.velocity.x += 10 * x;
-            body.velocity.y += 10 * y;
+            if (x != 0 && y != 0) speed *= 0.7;
+            
+            body.velocity.x += 15 * x;
+            body.velocity.y += 15 * y;
 
             if (Math.abs(body.velocity.x) > speed) body.velocity.x = x * speed;
             if (Math.abs(body.velocity.y) > speed) body.velocity.y = y * speed;
@@ -115,10 +123,8 @@ class Player extends Entity {
             oldFacing = facing;
         }
         //sync speed to velocity
-        if (state != Idle)
-        {
-            switch (facing)
-            {
+        if (state != Idle) {
+            switch (facing) {
                 case Left | Right: anim.speed = animSpeed * (Math.abs(body.velocity.x)/speed + 0.2);
                 case Up | Down: anim.speed = animSpeed * (Math.abs(body.velocity.y)/speed + 0.2);
             }

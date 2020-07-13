@@ -109,8 +109,9 @@ class Main extends hxd.App {
 
 	private function loadPlayer(entity:ogmo.Entity) {
 		var player = new Player(s2d,entity.x,entity.y);
+		return; //remove this to test both charachters out
 		// Need somewhere to store data.
-		/*player = PersonUtils.GetPerson(s2d, {
+		var player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
 			drag_length: 20,
@@ -122,7 +123,7 @@ class Main extends hxd.App {
 		}, "air");
 		player.name = "player";
 		// player.setPosition(entity.x, entity.y);
-		player.personAnimation();*/
+		player.personAnimation();
 	}
 
 	private function updateMousePlayer(dt:Float) {
