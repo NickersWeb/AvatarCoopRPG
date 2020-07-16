@@ -1,3 +1,4 @@
+import h2d.RenderContext;
 import hxd.Event;
 import Person.State;
 import echo.data.Options.BodyOptions;
@@ -14,12 +15,7 @@ class PersonEnemy extends Person
         parent.getScene().removeEventListener(personEvent);
 		// this does not work, need to iterate the tile in the map.
     }
-    override function movePerson(dt:Float) {
-        //super.movePerson(dt);
-        //move enemy randomly 
-        //need raycasting or something to see enemy.
-    }
     override function step(dt:Float) {
-        super.step(dt);
+        //super.step(dt);
     }
 }

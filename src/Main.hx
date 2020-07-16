@@ -27,7 +27,7 @@ class Main extends hxd.App {
 	private static var cursor:Body;
 	private static var line:Line;
 	private static var player:Person;
-	
+
 	#if debug
 	public var echo_debug_drawer:HeapsDebug;
 	#end
@@ -51,10 +51,11 @@ class Main extends hxd.App {
 			height: s2d.height,
 			gravity_y: 0
 		});
+
 		loadCursor();
 		loadTileMap();
 		loadLine();
-		new Fps(150,s2d);
+		new Fps(150, s2d);
 		#if debug
 		echo_debug_drawer = new HeapsDebug(s2d);
 		#end
@@ -83,17 +84,16 @@ class Main extends hxd.App {
 				layer.render(s2d);
 			}
 		}
-		loadPlayer(player);
-		loadLevelEnemies(enemies);
+		loadLevelEnemies(enemies, loadPlayer(player));
 	}
 
-	private function loadLevelEnemies(enemies:List<ogmo.Entity>) {
+	private function loadLevelEnemies(enemies:List<ogmo.Entity>, player:Person) {
 		for (entity in enemies) {
-			loadEnemy(entity);
+			loadEnemy(entity, player);
 		}
 	}
 
-	private function loadEnemy(entity:ogmo.Entity) {
+	private function loadEnemy(entity:ogmo.Entity, player:Person) {
 		// Need somewhere to store data.
 		var enemy:PersonEnemy = new PersonEnemy(s2d, {
 			x: entity.x,
@@ -106,15 +106,32 @@ class Main extends hxd.App {
 			}
 		});
 		enemy.personAnimation();
+		
+		world.listeners.add(enemy.body, player.body, {
+			separate: true, // Setting this to true will cause the Bodies to separate on Collision. This defaults to true
+			enter: (a, b, c) -> enemyPlayerEnterCollide(a.entity, b.entity, c), // This callback is called on the first frame that a collision starts
+			stay: (a, b, c) -> enemyPlayerStayCollide(a.entity, b.entity, c), // This callback is called on frames when the two Bodies are continuing to collide
+			exit: (a, b) -> enemyPlayerExitCollide(a.entity, b.entity), // This callback is called when a collision between the two Bodies ends
+		});
 	}
-
-	private function loadPlayer(entity:ogmo.Entity) {
-		var player = new Player(s2d,entity.x,entity.y);
-		return; //remove this to test both charachters out
+	private function enemyPlayerEnterCollide(enemy:Entity, player:Entity, cData:Array<echo.data.Data.CollisionData>) {
+		trace('start collision $enemy.name and $player.name');
+	}
+	private function enemyPlayerStayCollide(enemy:Entity, player:Entity, cData:Array<echo.data.Data.CollisionData>) {
+		trace('stay collision $enemy.name and $player.name');
+	}
+	private function enemyPlayerExitCollide(enemy:Entity, player:Entity) {
+		trace('end collision $enemy.name and $player.name');
+	}
+	private function loadPlayer(entity:ogmo.Entity):Person {
+		// var player = new Player(s2d,entity.x,entity.y);
+		// return; //remove this to test both charachters out
 		// Need somewhere to store data.
 		var player = PersonUtils.GetPerson(s2d, {
 			x: entity.x,
 			y: entity.y,
+			drag_x: 200,
+			drag_y: 200,
 			drag_length: 20,
 			elasticity: 0.2,
 			shape: {
@@ -125,10 +142,11 @@ class Main extends hxd.App {
 		player.name = "player";
 		// player.setPosition(entity.x, entity.y);
 		player.personAnimation();
+		return player;
 	}
 
 	private function updateMousePlayer(dt:Float) {
-		//line.start.set(player.body.x, player.body.y);
+		// line.start.set(player.body.x, player.body.y);
 		// step cursor
 		cursor.velocity.set(s2d.mouseX - cursor.x, s2d.mouseY - cursor.y);
 		cursor.velocity *= 100;
@@ -137,8 +155,8 @@ class Main extends hxd.App {
 	}
 
 	private function loadLine() {
-		line = Line.get(world.width / 2, world.height / 2, world.width / 2, world.height / 2); 
-		//Line.get(player.body.x, player.body.y);
+		line = Line.get(world.width / 2, world.height / 2, world.width / 2, world.height / 2);
+		// Line.get(player.body.x, player.body.y);
 	}
 
 	private function loadCursor() {

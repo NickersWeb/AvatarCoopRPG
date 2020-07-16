@@ -1,17 +1,9 @@
-import haxe.macro.Expr.Case;
-import h3d.pass.Default;
-import hxmath.math.Vector2;
-import hxd.Window;
-import sys.ssl.Key;
+import h2d.RenderContext;
 import hxd.Event;
-import h2d.Interactive;
-import h2d.Graphics;
-import hxd.Res;
 import h2d.Tile;
 import h2d.Object;
 import h2d.Anim;
-import h2d.Drawable;
-import hxd.fmt.blend.Data.Handle;
+import hxd.Key;
 import echo.data.Options.BodyOptions;
 
 enum State {
@@ -41,10 +33,12 @@ class Person extends Entity {
 	var DODGESPEED:Float = 500;
 	var BENDINGSPEED:Float = 850;
 
-	var tile:Tile;
+	var movementTile:Tile;
+	var attackTile:Tile;
 	var anim:Anim = new Anim();
 	var atkIndex:Int = 0;
 	var state(default, set):State = Idle;
+	var speed:Float = 0;
 
 	var gender:String = "m";
 	// Commented out 8d to 4d
@@ -72,7 +66,14 @@ class Person extends Entity {
 	}
 
 	public function personAnimation() {
-		var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
+		var a:Array<Tile> = new Array<Tile>();
+		switch(this.state){
+			case Run,Dodge,Walk,Idle, None:
+				a = PersonUtils.animCal(this.movementTile, 64, 64, 64, this.facing);
+			case Attack:
+				a = PersonUtils.animCal(this.attackTile, 64, 64, 64, this.facing);
+		}
+		 
 		switch (this.state) {
 			case Run:
 				this.runAnimation(a);
@@ -86,14 +87,15 @@ class Person extends Entity {
 		}
 	}
 
-	private function personEvent(event:Event) {
-		var up = hxd.Key.isDown(hxd.Key.W);
-		var down = hxd.Key.isDown(hxd.Key.S);
-		var left = hxd.Key.isDown(hxd.Key.A);
-		var right = hxd.Key.isDown(hxd.Key.D);
-		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
-		var rClick = hxd.Key.isPressed(hxd.Key.MOUSE_RIGHT);
-		var lClick = hxd.Key.isPressed(hxd.Key.MOUSE_LEFT);
+	private function personEvent(e:Event) {
+
+		var up = Key.isDown(Key.W);
+		var down = Key.isDown(Key.S);
+		var left = Key.isDown(Key.A);
+		var right = Key.isDown(Key.D);
+		var shift = Key.isDown(Key.SHIFT);
+		var rClick = Key.isPressed(Key.MOUSE_RIGHT);
+		var lClick = Key.isPressed(Key.MOUSE_LEFT);
 
 		if (up && down) {
 			up = down = false;
@@ -196,15 +198,15 @@ class Person extends Entity {
 		// for character setup, e.g. clothing, inventory etc.
 	}
 
-	private function walkAnimation(a:Array<Tile>) {
+	private function walkAnimation(a) {
 		this.anim.speed = 8;
 		switch (facing) {
 			case Up:
-				this.anim.play([for (i in 7...14 + 1) a[i]]);
+				this.anim.play([for (i in 0...7 + 1) a[i]]);
 			case Down:
-				this.anim.play([for (i in 39...46 + 1) a[i]]);
+				this.anim.play([for (i in 16...23 + 1) a[i]]);
 			case Left, Right:
-				this.anim.play([for (i in 55...62 + 1) a[i]]);
+				this.anim.play([for (i in 32...39 + 1) a[i]]);
 				// Commented out 8d to 4d
 				// case UpLeft, UpRight:
 				// 	this.anim.play([for (i in 23...30 + 1) a[i]]);
@@ -217,11 +219,11 @@ class Person extends Entity {
 		this.anim.speed = 8;
 		switch (facing) {
 			case Up:
-				this.anim.play([for (i in 15...22 + 1) a[i]]);
+				this.anim.play([for (i in 8...15 + 1) a[i]]);
 			case Down:
-				this.anim.play([for (i in 47...54 + 1) a[i]]);
+				this.anim.play([for (i in 24...31 + 1) a[i]]);
 			case Left, Right:
-				this.anim.play([for (i in 71...77 + 1) a[i]]);
+				this.anim.play([for (i in 40...47 + 1) a[i]]);
 				// Commented out 8d to 4d
 				// case UpLeft, UpRight:
 				// 	this.anim.play([for (i in 31...38 + 1) a[i]]);
@@ -231,31 +233,34 @@ class Person extends Entity {
 	}
 
 	private function dodgeRollAnimation(a:Array<Tile>) {
-		this.anim.speed = 8;
+		this.anim.speed = 10;
 		switch (facing) {
 			case Up:
-				this.anim.play([for (i in 96...99 + 1) a[i]]);
+				this.anim.play([for (i in 54...57 + 1) a[i]]);
 			// Commented out 8d to 4d
 			// case DownLeft, DownRight:
 			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
 			// 			case UpLeft, UpRight:
 			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
 			case Down:
-				this.anim.play([for (i in 103...108 + 1) a[i]]);
+				this.anim.play([for (i in 58...61 + 1) a[i]]);
 			case Left, Right:
-				this.anim.play([for (i in 109...112 + 1) a[i]]);
+				this.anim.play([for (i in 61...65 + 1) a[i]]);
 		}
+	}
+	private function attackAnimation(a:Array<Tile>) {
+		
 	}
 
 	private function idleAnimation(a:Array<Tile>) {
 		this.anim.speed = 0.5;
 		switch (facing) {
 			case Up:
-				this.anim.play([for (i in 94...95 + 1) a[i]]);
+				this.anim.play([for (i in 52...53 + 1) a[i]]);
 			case Down:
-				this.anim.play([for (i in 90...91 + 1) a[i]]);
+				this.anim.play([for (i in 50...51 + 1) a[i]]);
 			case Left, Right:
-				this.anim.play([for (i in 88...89 + 1) a[i]]);
+				this.anim.play([for (i in 48...49 + 1) a[i]]);
 				// Commented out 8d to 4d
 				// case UpLeft, UpRight:
 				// 	this.anim.play([for (i in 92...93 + 1) a[i]]);
@@ -267,19 +272,7 @@ class Person extends Entity {
 	function set_facing(f) {
 		if (f != this.facing) {
 			this.facing = f;
-			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-			switch (this.state) {
-				case Run:
-					this.runAnimation(a);
-				case Walk:
-					this.walkAnimation(a);
-				case Dodge:
-					this.dodgeRollAnimation(a);
-				case Attack:
-				case Idle:
-					this.idleAnimation(a);
-				case None:
-			}
+			this.personAnimation();
 		}
 
 		return f;
@@ -288,19 +281,7 @@ class Person extends Entity {
 	function set_state(s) {
 		if (s != this.state) {
 			this.state = s;
-			var a:Array<Tile> = PersonUtils.animCal(this.tile, 64, 64, 64, this.facing);
-			switch (this.state) {
-				case Run:
-					this.runAnimation(a);
-				case Walk:
-					this.walkAnimation(a);
-				case Dodge:
-					this.dodgeRollAnimation(a);
-				case Attack:
-				case Idle:
-					this.idleAnimation(a);
-				case None:
-			}
+			this.personAnimation();
 		}
 
 		return s;
