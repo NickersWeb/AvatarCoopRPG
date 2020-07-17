@@ -8,7 +8,8 @@ class PersonEnemy extends Person
 	public override function new(?parent : h2d.Object, body_options:BodyOptions) {
 		super(parent, body_options);
 		this.name = "personenemy";
-        this.tile = PersonUtils.GetPersonGraphic(this.gender, "air");
+        this.movementTile = PersonUtils.GetPersonGraphic(this.gender);
+        this.attackTile = PersonUtils.GetPersonAtkGraphicAnimations("air");
         //Commented out 8d to 4d
         this.facing = Down; //DownLeft;
         this.state = Idle;

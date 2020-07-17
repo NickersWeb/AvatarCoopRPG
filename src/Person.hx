@@ -1,3 +1,4 @@
+import h3d.scene.Scene;
 import h2d.RenderContext;
 import hxd.Event;
 import h2d.Tile;
@@ -11,6 +12,8 @@ enum State {
 	Walk;
 	Dodge;
 	Attack;
+	AttackIdleStance;
+	AttackWalkStance;
 	Idle;
 	None;
 }
@@ -60,6 +63,10 @@ class Person extends Entity {
 			case Run:
 			case Dodge:
 				this.state = Run;
+			case AttackIdleStance:
+				this.state = AttackIdleStance;
+			case AttackWalkStance:
+				this.state = AttackWalkStance;
 			case Idle, Walk, Attack, None:
 				this.state = Idle;
 		}
@@ -67,13 +74,13 @@ class Person extends Entity {
 
 	public function personAnimation() {
 		var a:Array<Tile> = new Array<Tile>();
-		switch(this.state){
-			case Run,Dodge,Walk,Idle, None:
+		switch (this.state) {
+			case Run, Dodge, Walk, Idle, None:
 				a = PersonUtils.animCal(this.movementTile, 64, 64, 64, this.facing);
-			case Attack:
+			case Attack, AttackIdleStance, AttackWalkStance:
 				a = PersonUtils.animCal(this.attackTile, 64, 64, 64, this.facing);
 		}
-		 
+
 		switch (this.state) {
 			case Run:
 				this.runAnimation(a);
@@ -83,16 +90,26 @@ class Person extends Entity {
 				this.walkAnimation(a);
 			case Idle:
 				this.idleAnimation(a);
+			case AttackIdleStance:
+				this.attackStanceIdleAnimation(a);
+			case AttackWalkStance:
+				this.attackStanceWalkAnimation(a);
 			case Attack, None:
+				this.attackAnimation(a);
 		}
 	}
 
 	private function personEvent(e:Event) {
+		this.personActions();
+	}
 
+	private function personActions() {
 		var up = Key.isDown(Key.W);
 		var down = Key.isDown(Key.S);
 		var left = Key.isDown(Key.A);
 		var right = Key.isDown(Key.D);
+		var lClickDown = Key.isDown(Key.MOUSE_LEFT);
+
 		var shift = Key.isDown(Key.SHIFT);
 		var rClick = Key.isPressed(Key.MOUSE_RIGHT);
 		var lClick = Key.isPressed(Key.MOUSE_LEFT);
@@ -111,45 +128,72 @@ class Person extends Entity {
 		}
 		if (!this.state.equals(Dodge)) {
 			if (up || down || left || right) {
-				if (rClick) {
-					if (!this.state.equals(Idle)) {
-						this.state = Dodge;
-					}
-				} else if (lClick) {
-					this.state = Attack;
-				} else if (shift) {
+				if (shift) {
 					this.state = Run;
 				} else {
-					this.state = Walk;
-				}
-
-				if (up) {
-					this.facing = Up;
-					// Commented out 8d to 4d
-					// if (left) {
-					// 	this.facing = UpLeft;
-					// } else if (right) {
-					// 	this.facing = UpRight;
-					// } else {
-					// 	this.facing = Up;
-					// }
-				} else if (down) {
-					// Commented out 8d to 4d
-					// if (left) {
-					// 	this.facing = DownLeft;
-					// } else if (right) {
-					// 	this.facing = DownRight;
-					// } else {
-					// 	this.facing = Down;
-					// }
-					this.facing = Down;
-				} else if (left) {
-					this.facing = Left;
-				} else if (right) {
-					this.facing = Right;
+					if (lClickDown) {
+						this.state = AttackWalkStance;
+					} else {
+						this.state = Walk;
+					}
 				}
 			} else {
-				this.state = Idle;
+				if (lClickDown) {
+					this.state = AttackIdleStance;
+				} else {
+					this.state = Idle;
+				}
+			}
+			if (rClick) {
+				if (!this.state.equals(Idle)) {
+					this.state = Dodge;
+				}
+			} else if (lClick) {
+				this.state = Attack;
+			} else if (lClickDown) {
+				var dir:Float = hxd.Math.atan2(parent.getScene().mouseY - this.body.y, parent.getScene().mouseX - this.body.x);
+				dir = Math.round(dir * Math.pow(1, 2));
+				// Commented out 8d to 4d - need 8d with this?
+				// set dir switch.
+				switch (dir) {
+					case 1, 2:
+						up = left = right = false;
+						down = true;
+					case -1, -2, -3:
+						down = left = right = false;
+						up = true;
+					case 0:
+						down = up = left = false;
+						right = true;
+					case 3:
+						down = up = right = false;
+						left = true;
+				}
+			}
+			if (up) {
+				this.facing = Up;
+				// Commented out 8d to 4d
+				// if (left) {
+				// 	this.facing = UpLeft;
+				// } else if (right) {
+				// 	this.facing = UpRight;
+				// } else {
+				// 	this.facing = Up;
+				// }
+			} else if (down) {
+				// Commented out 8d to 4d
+				// if (left) {
+				// 	this.facing = DownLeft;
+				// } else if (right) {
+				// 	this.facing = DownRight;
+				// } else {
+				// 	this.facing = Down;
+				// }
+				this.facing = Down;
+			} else if (left) {
+				this.facing = Left;
+			} else if (right) {
+				this.facing = Right;
 			}
 		}
 	}
@@ -186,9 +230,9 @@ class Person extends Entity {
 				speed = RUNSPEED;
 			case Dodge:
 				speed = DODGESPEED;
-			case Walk:
+			case Walk, AttackWalkStance:
 				speed = WALKSPEED;
-			case Attack, Idle, None:
+			case Attack, AttackIdleStance, Idle, None:
 				speed = 0;
 		}
 		return ((speed * dt) * 50);
@@ -248,9 +292,12 @@ class Person extends Entity {
 				this.anim.play([for (i in 61...65 + 1) a[i]]);
 		}
 	}
-	private function attackAnimation(a:Array<Tile>) {
-		
-	}
+
+	private function attackAnimation(a:Array<Tile>) {}
+
+	private function attackStanceWalkAnimation(a:Array<Tile>) {}
+
+	private function attackStanceIdleAnimation(a:Array<Tile>) {}
 
 	private function idleAnimation(a:Array<Tile>) {
 		this.anim.speed = 0.5;

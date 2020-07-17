@@ -18,8 +18,8 @@ class PersonAir extends Person {
 		this.state = Idle;
 		// this does not work, need to iterate the tile in the map.
 	}
-	override function attackAnimation(a:Array<Tile>) {
-		//super.attackAnimation(a);
+	override function attackStanceIdleAnimation(a:Array<Tile>) {
+		//super.attackStanceIdleAnimation(a);
 		this.anim.speed = 10;
 		switch (facing) {
 			case Up:
