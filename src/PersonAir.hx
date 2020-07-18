@@ -35,4 +35,21 @@ class PersonAir extends Person {
 				this.anim.play([for (i in 4...4 + 1) a[i]]);
 		}
 	}
+	override function attackStanceWalkAnimation(a:Array<Tile>) {
+		//super.attackStanceWalkAnimation(a);
+		this.anim.speed = 10;
+		switch (facing) {
+			case Up:
+				this.anim.play([for (i in 16...23 + 1) a[i]]);
+			// Commented out 8d to 4d
+			// case DownLeft, DownRight:
+			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
+			// 			case UpLeft, UpRight:
+			// 	this.anim.play([for (i in 100...102 + 1) a[i]]);
+			case Down:
+				this.anim.play([for (i in 8...15 + 1) a[i]]);
+			case Left, Right:
+				this.anim.play([for (i in 24...31 + 1) a[i]]);
+		}
+	}
 }

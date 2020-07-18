@@ -155,6 +155,7 @@ class Person extends Entity {
 				dir = Math.round(dir * Math.pow(1, 2));
 				// Commented out 8d to 4d - need 8d with this?
 				// set dir switch.
+				//Need to sort out when moving opposite direction
 				switch (dir) {
 					case 1, 2:
 						up = left = right = false;
