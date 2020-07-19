@@ -36,7 +36,7 @@ class PersonAir extends Person {
 		}
 	}
 	override function attackStanceWalkAnimation(a:Array<Tile>) {
-		//super.attackStanceWalkAnimation(a);
+		super.attackStanceWalkAnimation(a);
 		this.anim.speed = 10;
 		switch (facing) {
 			case Up:
