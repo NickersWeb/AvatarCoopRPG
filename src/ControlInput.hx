@@ -12,6 +12,8 @@ class ControlInput {
 		InputDodge = Key.isPressed(Key.MOUSE_RIGHT);
 		InputAtk = Key.isPressed(Key.MOUSE_LEFT);
 		InputAtkHold = Key.isDown(Key.MOUSE_LEFT);
+		InputAtkChangeUp = Key.isDown(Key.MOUSE_WHEEL_UP);
+		InputAtkChangeDown = Key.isDown(Key.MOUSE_WHEEL_DOWN);
     }
     public function IsInputMovement():Bool {
         return Up || Down || Left || Right ? true : false;
@@ -23,5 +25,7 @@ class ControlInput {
 	public var InputDodge:Bool;
 	public var InputAtk:Bool;
 	public var InputAtkHold:Bool;
+	public  var InputAtkChangeUp:Bool;
+	public var InputAtkChangeDown:Bool;
 	public var InputRun:Bool;
 }

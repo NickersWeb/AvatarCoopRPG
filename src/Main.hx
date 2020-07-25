@@ -1,3 +1,5 @@
+import hxd.fmt.grd.Data.Color;
+import h2d.Bitmap;
 import hxd.Window;
 import h2d.Drawable;
 import hxd.Event;
@@ -28,6 +30,7 @@ class Main extends hxd.App {
 	private static var line:Line;
 	private static var player:Person;
 
+	public var camera:Camera;
 	#if debug
 	public var echo_debug_drawer:HeapsDebug;
 	#end
@@ -51,7 +54,7 @@ class Main extends hxd.App {
 			height: s2d.height,
 			gravity_y: 0
 		});
-
+		camera = new Camera(s2d);
 		loadCursor();
 		loadTileMap();
 		loadLine();
@@ -106,23 +109,28 @@ class Main extends hxd.App {
 			}
 		});
 		enemy.personAnimation();
-		
+
 		world.listeners.add(enemy.body, player.body, {
 			separate: true, // Setting this to true will cause the Bodies to separate on Collision. This defaults to true
 			enter: (a, b, c) -> enemyPlayerEnterCollide(a.entity, b.entity, c), // This callback is called on the first frame that a collision starts
-			stay: (a, b, c) -> enemyPlayerStayCollide(a.entity, b.entity, c), // This callback is called on frames when the two Bodies are continuing to collide
+			stay: (a, b,
+				c) -> enemyPlayerStayCollide(a.entity, b.entity, c), // This callback is called on frames when the two Bodies are continuing to collide
 			exit: (a, b) -> enemyPlayerExitCollide(a.entity, b.entity), // This callback is called when a collision between the two Bodies ends
 		});
 	}
+
 	private function enemyPlayerEnterCollide(enemy:Entity, player:Entity, cData:Array<echo.data.Data.CollisionData>) {
 		trace('start collision $enemy.name and $player.name');
 	}
+
 	private function enemyPlayerStayCollide(enemy:Entity, player:Entity, cData:Array<echo.data.Data.CollisionData>) {
 		trace('stay collision $enemy.name and $player.name');
 	}
+
 	private function enemyPlayerExitCollide(enemy:Entity, player:Entity) {
 		trace('end collision $enemy.name and $player.name');
 	}
+
 	private function loadPlayer(entity:ogmo.Entity):Person {
 		// var player = new Player(s2d,entity.x,entity.y);
 		// return; //remove this to test both charachters out
@@ -142,6 +150,17 @@ class Main extends hxd.App {
 		player.name = "player";
 		// player.setPosition(entity.x, entity.y);
 		player.personAnimation();
+		player.parent.getScene().addEventListener(function(event:hxd.Event) {
+			this.camera.viewY = player.body.last_y;
+			this.camera.viewX = player.body.last_x;
+		});
+		var selItem:Graphics = new Graphics(s2d);
+		selItem.lineStyle(1, 0xFFFFFF, 1);
+		selItem.drawRect(world.width, world.height, 100, 100);
+		selItem.color = new h3d.Vector(255, 255, 255, 1);
+		// player.parent.getScene().addEventListener(function(event:hxd.Event) {
+		// 	// Update for the bending move selected.
+		// });
 		return player;
 	}
 

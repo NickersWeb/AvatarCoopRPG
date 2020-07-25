@@ -1,3 +1,4 @@
+import haxe.ds.List;
 import haxe.macro.Expr.Case;
 import h2d.RenderContext;
 import hxd.Event;
@@ -56,6 +57,7 @@ class Person extends Entity {
 	var attackTile:Tile;
 	var anim:Anim = new Anim();
 	var atkIndex:Int = 0;
+	var atkSelection:Array<String> = new Array<String>();
 	var state(default, set):State = Idle;
 	var speed:Float = 0;
 	var totalDodgeCount:Int = 0;
@@ -86,6 +88,7 @@ class Person extends Entity {
 			case WalkAtkStance:
 			case Walk:
 			case Idle, Attack, None:
+				trace('Current attack is ... '+ this.atkSelection[this.atkIndex]);
 		}
 	}
 
@@ -134,10 +137,26 @@ class Person extends Entity {
 			cInput.InputDodge = cInput.InputAtk = false;
 			return;
 		}
+		
+		this.atkSelectHandler(cInput);
+
 		if (!this.state.equals(Dodge)) {
 			// Set person direction
 			this.setPersonFacingDirection(cInput);
 			this.setInputState(cInput);
+		}
+	}
+	private function atkSelectHandler(cInput:ControlInput){
+		if(cInput.InputAtkChangeUp){
+				this.atkIndex += 1;
+		}else if(cInput.InputAtkChangeDown){
+				this.atkIndex += -1;
+		}
+		if(this.atkIndex < 0){
+			this.atkIndex = this.atkSelection.length;
+		}
+		if(this.atkIndex > this.atkSelection.length){
+			this.atkIndex = 0;
 		}
 	}
 	private function setInputState(cInput:ControlInput) {
